@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShadowRoot Security Platform</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Consolas, monospace;
+    }
+
+    body{
+      background:#050b16;
+      color:#00f7ff;
+      overflow-x:hidden;
+    }
+
+    canvas{
+      position:fixed;
+      top:0;
+      left:0;
+      z-index:-1;
+    }
+
+    .cursor-glow{
+      position:fixed;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      pointer-events:none;
+      background:radial-gradient(circle, rgba(0,247,255,.12), transparent 70%);
+      transform:translate(-50%,-50%);
+      z-index:0;
+    }
+
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      padding:20px 8%;
+      background:rgba(0,0,0,.4);
+      backdrop-filter:blur(8px);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    /* LOGO SECTION */
+    .logo-container{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo-container img{
+      width:32px;
+      height:32px;
+      filter:drop-shadow(0 0 6px #00f7ff);
+    }
+
+    nav h1{
+      text-shadow:0 0 12px #00f7ff;
+    }
+
+    nav a{
+      color:#fff;
+      text-decoration:none;
+      margin-left:20px;
+      position:relative;
+    }
+
+    nav a::after{
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:-4px;
+      width:0;
+      height:2px;
+      background:#00f7ff;
+      transition:.3s;
+    }
+
+    nav a:hover::after{
+      width:100%;
+    }
+
+    .hero{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:20px;
+    }
+
+    .hero h2{
+      font-size:clamp(2.5rem,8vw,5rem);
+      text-shadow:0 0 20px #00f7ff;
+    }
+
+    .hero p{
+      margin-top:20px;
+      max-width:700px;
+      line-height:1.8;
+      color:#c9f7ff;
+    }
+
+    .terminal{
+      margin-top:30px;
+      background:rgba(7,17,31,.9);
+      border:1px solid rgba(0,247,255,.45);
+      padding:20px;
+      border-radius:14px;
+      width:min(800px,90%);
+      text-align:left;
+    }
+
+    #terminalText{
+      font-size:1rem;
+      color:#00f7ff;
+      white-space:nowrap;
+      overflow:hidden;
+    }
+
+    .cursor{
+      display:inline-block;
+      width:8px;
+      height:18px;
+      background:#00f7ff;
+      margin-left:5px;
+      animation:blink 1s infinite;
+    }
+
+    @keyframes blink{
+      0%,50%,100%{opacity:1}
+      25%,75%{opacity:0}
+    }
+
+    .section{
+      padding:90px 8%;
+    }
+
+    .section h2{
+      font-size:clamp(1.8rem,4vw,2.6rem);
+      margin-bottom:20px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:linear-gradient(145deg,#0a1526,#0d1c31);
+      padding:24px;
+      border:1px solid #113b50;
+      border-radius:18px;
+      transition:.35s;
+      box-shadow:0 8px 24px rgba(0,0,0,.25);
+    }
+
+    .card:hover{
+      transform:translateY(-8px) scale(1.02);
+      box-shadow:0 0 30px rgba(0,247,255,.22);
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(40px);
+      transition:.8s;
+    }
+
+    .reveal.active{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    @media(max-width:768px){
+      nav{
+        justify-content:center;
+        text-align:center;
+      }
+      .section{
+        padding:60px 5%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+<canvas id="matrix"></canvas>
+
+<nav>
+  <div class="logo-container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" alt="Kali Logo">
+    <h1>SHADOWROOT</h1>
+  </div>
+
+  <div>
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#labs">Labs</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <h2>ShadowRoot Security</h2>
+  <p>Delivering intelligent protection for modern digital systems.</p>
+
+  <div class="terminal">
+    <div id="terminalText">
+      <span id="text"></span><span class="cursor"></span>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="features">
+  <h2>System Modules</h2>
+  <div class="cards">
+    <div class="card">Threat Dashboard</div>
+    <div class="card">Terminal UI</div>
+    <div class="card">Analytics Panels</div>
+    <div class="card">Security Metrics</div>
+  </div>
+</section>
+
+<section class="section reveal" id="labs">
+  <h2>Cyber Labs</h2>
+  <div class="cards">
+    <div class="card">Web Security</div>
+    <div class="card">Network Analysis</div>
+    <div class="card">Recon Toolkit</div>
+  </div>
+</section>
+
+<section class="section reveal" id="contact">
+  <h2>Secure Contact</h2>
+  <div class="terminal">encrypted://secure-channel</div>
+</section>
+
+<script>
+  // MATRIX EFFECT
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const fontSize = 14;
+  const columns = Math.floor(canvas.width / fontSize);
+  const drops = Array(columns).fill(1);
+
+  function draw(){
+    ctx.fillStyle = "rgba(5,11,22,0.08)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "#00f7ff";
+    ctx.font = fontSize + "px monospace";
+
+    for(let i=0;i<drops.length;i++){
+      let text = chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+
+      if(drops[i]*fontSize > canvas.height && Math.random()>0.975){
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  setInterval(draw, 35);
+
+  window.addEventListener("resize", ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // CURSOR GLOW
+  document.addEventListener("mousemove", e=>{
+    const glow = document.getElementById("cursorGlow");
+    glow.style.left = e.clientX + "px";
+    glow.style.top = e.clientY + "px";
+  });
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add("active");
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll(".reveal").forEach(el=>{
+    observer.observe(el);
+  });
+
+  // SINGLE LINE TYPING
+  const textElement = document.getElementById("text");
+  const message = "Initializing secure environment...";
+  let index = 0;
+
+  function typeText() {
+    if (index < message.length) {
+      textElement.textContent += message.charAt(index);
+      index++;
+      setTimeout(typeText, 40);
+    } else {
+      setTimeout(() => {
+        textElement.textContent = "";
+        index = 0;
+        typeText();
+      }, 2000);
+    }
+  }
+
+  typeText();
+</script>
+
+</body>
+</html>
