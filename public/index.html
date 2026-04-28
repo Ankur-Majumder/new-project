@@ -50,7 +50,6 @@
       z-index:10;
     }
 
-    /* LOGO SECTION */
     .logo-container{
       display:flex;
       align-items:center;
@@ -182,11 +181,34 @@
       transform:translateY(0);
     }
 
+    /* ✅ MOBILE FIX */
     @media(max-width:768px){
+
       nav{
-        justify-content:center;
+        flex-direction:column;
+        align-items:center;
         text-align:center;
       }
+
+      nav > div:last-child{
+        display:flex;
+        flex-direction:column;
+        width:100%;
+        margin-top:15px;
+        gap:10px;
+      }
+
+      nav a{
+        margin:0;
+        padding:10px;
+        border-bottom:1px solid rgba(255,255,255,0.1);
+      }
+
+      /* 🔥 Move Contact to TOP */
+      nav a:nth-child(4){
+        order:-1;
+      }
+
       .section{
         padding:60px 5%;
       }
@@ -201,7 +223,7 @@
 
 <nav>
   <div class="logo-container">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" alt="Kali Logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg">
     <h1>SHADOWROOT</h1>
   </div>
 
@@ -249,7 +271,6 @@
 </section>
 
 <script>
-  // MATRIX EFFECT
   const canvas = document.getElementById('matrix');
   const ctx = canvas.getContext('2d');
 
@@ -286,14 +307,12 @@
     canvas.height = window.innerHeight;
   });
 
-  // CURSOR GLOW
   document.addEventListener("mousemove", e=>{
     const glow = document.getElementById("cursorGlow");
     glow.style.left = e.clientX + "px";
     glow.style.top = e.clientY + "px";
   });
 
-  // SCROLL REVEAL
   const observer = new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       if(entry.isIntersecting){
@@ -306,7 +325,6 @@
     observer.observe(el);
   });
 
-  // SINGLE LINE TYPING
   const textElement = document.getElementById("text");
   const message = "Initializing secure environment...";
   let index = 0;
