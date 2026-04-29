@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recon Toolkit</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Consolas;}
+
+body{background:#050b16;color:#00f7ff;overflow-x:hidden;}
+
+canvas{position:fixed;top:0;left:0;z-index:-1;}
+
+.cursor-glow{
+  position:fixed;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle, rgba(0,247,255,.12), transparent 70%);
+  pointer-events:none;transform:translate(-50%,-50%);
+}
+
+/* BACK */
+.back{
+  margin:20px;
+  display:inline-block;
+  border:1px solid #00f7ff;
+  padding:8px 14px;
+  text-decoration:none;
+  color:#00f7ff;
+  border-radius:6px;
+}
+
+/* TITLE */
+h1{
+  text-align:center;
+  margin:20px;
+  text-shadow:0 0 15px #00f7ff;
+}
+
+/* SEARCH */
+.search{
+  display:block;
+  margin:20px auto;
+  padding:12px;
+  width:300px;
+  background:#0a1526;
+  border:1px solid #00f7ff;
+  color:#00f7ff;
+  border-radius:6px;
+}
+
+/* TABS (DESKTOP DEFAULT) */
+.tabs{
+  text-align:center;
+  margin:20px;
+}
+
+.tabs button{
+  margin:6px;
+  padding:8px 14px;
+  background:#0a1526;
+  border:1px solid #00f7ff;
+  color:#00f7ff;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+.tabs .active{
+  background:#00f7ff;
+  color:#000;
+}
+
+/* GRID (DESKTOP DEFAULT) */
+.tools{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  padding:20px;
+}
+
+.tool{
+  background:linear-gradient(145deg,#0a1526,#0d1c31);
+  padding:24px;
+  border-radius:18px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.tool:hover{
+  transform:translateY(-8px) scale(1.02);
+  box-shadow:0 0 30px rgba(0,247,255,.22);
+}
+
+.tool img{
+  width:50px;
+  margin-bottom:10px;
+}
+
+.tool p{
+  font-size:.85rem;
+  color:#c9f7ff;
+}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.9);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-box{
+  background:#0a1526;
+  padding:20px;
+  border-radius:10px;
+  width:90%;
+  max-width:500px;
+}
+
+.flow{margin-top:10px;color:#00ff88;}
+
+
+
+
+
+
+/* ========================= */
+/* 📱 MOBILE FIX ONLY */
+/* ========================= */
+@media(max-width:768px){
+
+  .search{
+    width:90%;
+  }
+
+  .tabs{
+    display:flex;
+    overflow-x:auto;
+    gap:8px;
+    padding:10px;
+  }
+
+  .tabs button{
+    flex-shrink:0;
+    font-size:.8rem;
+    padding:6px 10px;
+  }
+
+  .tabs::-webkit-scrollbar{
+    display:none;
+  }
+
+  .tools{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    padding:12px;
+  }
+
+  .tool{
+    padding:14px;
+    border-radius:12px;
+  }
+
+  .tool img{
+    width:36px;
+  }
+
+  .tool h3{
+    font-size:.9rem;
+  }
+
+  .tool p{
+    font-size:.75rem;
+  }
+
+  .modal-box{
+    width:95%;
+    padding:15px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+<canvas id="matrix"></canvas>
+
+<a href="index.html" class="back">← Back</a>
+
+<h1>Recon Toolkit</h1>
+
+<input type="text" id="search" class="search" placeholder="Search tools...">
+
+<div class="tabs" id="tabs"></div>
+<div class="tools" id="tools"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 id="title"></h2>
+    <p id="desc"></p>
+    <pre id="typing"></pre>
+    <div class="flow">Recon → Scan → Exploit → Access</div>
+  </div>
+</div>
+
+<script>
+const fallback="https://cdn-icons-png.flaticon.com/512/4712/4712027.png";
+
+const toolsData = [
+
+/* ================= RECON ================= */
+{name:"Nmap",category:"Recon",desc:"Network scanning & port discovery.",img:"https://nmap.org/images/nmap-logo-256x256.png"},
+{name:"Amass",category:"Recon",desc:"Subdomain enumeration tool.",img:""},
+{name:"Recon-ng",category:"Recon",desc:"Full recon framework.",img:""},
+{name:"Maltego",category:"Recon",desc:"OSINT & link analysis.",img:"https://www.maltego.com/images/maltego-logo.svg"},
+{name:"theHarvester",category:"Recon",desc:"Emails, domains & OSINT.",img:""},
+{name:"Dnsenum",category:"Recon",desc:"DNS enumeration.",img:""},
+{name:"Fierce",category:"Recon",desc:"DNS scanner.",img:""},
+{name:"Sublist3r",category:"Recon",desc:"Subdomain finder.",img:""},
+{name:"Netdiscover",category:"Recon",desc:"Network discovery.",img:""},
+{name:"Arjun",category:"Recon",desc:"Hidden parameter finder.",img:""},
+{name:"Knockpy",category:"Recon",desc:"Subdomain scanning.",img:""},
+
+/* ================= SCANNING ================= */
+{name:"Masscan",category:"Scanning",desc:"Fast port scanner.",img:""},
+{name:"Zmap",category:"Scanning",desc:"Internet-wide scanning.",img:""},
+{name:"OpenVAS",category:"Scanning",desc:"Vulnerability scanner.",img:""},
+{name:"Nikto",category:"Scanning",desc:"Web server scanner.",img:"https://cirt.net/images/nikto-logo.png"},
+{name:"Lynis",category:"Scanning",desc:"Security auditing.",img:""},
+{name:"Legion",category:"Scanning",desc:"Pentest automation.",img:""},
+{name:"Vuls",category:"Scanning",desc:"Linux vulnerability scanner.",img:""},
+
+/* ================= WEB ================= */
+{name:"Burp Suite",category:"Web",desc:"Web proxy & testing.",img:"https://portswigger.net/favicon.ico"},
+{name:"OWASP ZAP",category:"Web",desc:"Web vulnerability scanner.",img:"https://www.zaproxy.org/img/zap-logo.svg"},
+{name:"SQLmap",category:"Web",desc:"SQL injection automation.",img:"https://sqlmap.org/images/sqlmap-logo.png"},
+{name:"Gobuster",category:"Web",desc:"Directory brute forcing.",img:""},
+{name:"Dirb",category:"Web",desc:"Find hidden web paths.",img:""},
+{name:"Dirsearch",category:"Web",desc:"Directory scanner.",img:""},
+{name:"Wfuzz",category:"Web",desc:"Web fuzzing.",img:""},
+{name:"XSStrike",category:"Web",desc:"XSS detection.",img:""},
+{name:"Commix",category:"Web",desc:"Command injection tool.",img:""},
+
+/* ================= PASSWORD ================= */
+{name:"Hydra",category:"Password",desc:"Brute force attacks.",img:""},
+{name:"John the Ripper",category:"Password",desc:"Password cracking.",img:""},
+{name:"Hashcat",category:"Password",desc:"GPU cracking tool.",img:"https://hashcat.net/img/hashcat-logo.png"},
+{name:"Medusa",category:"Password",desc:"Fast brute-force tool.",img:""},
+{name:"CeWL",category:"Password",desc:"Custom wordlist generator.",img:""},
+
+/* ================= WIRELESS ================= */
+{name:"Aircrack-ng",category:"Wireless",desc:"WiFi cracking suite.",img:"https://www.kali.org/tools/aircrack-ng/images/aircrack-ng-logo.svg"},
+{name:"Reaver",category:"Wireless",desc:"WPS brute-force.",img:""},
+{name:"Kismet",category:"Wireless",desc:"Wireless monitoring.",img:""},
+{name:"Fluxion",category:"Wireless",desc:"WiFi phishing attack.",img:""},
+{name:"Wifite",category:"Wireless",desc:"Automated WiFi hacking.",img:""},
+{name:"Airgeddon",category:"Wireless",desc:"Wireless attack toolkit.",img:""},
+
+/* ================= SNIFFING ================= */
+{name:"Wireshark",category:"Sniffing",desc:"Packet analyzer.",img:"https://upload.wikimedia.org/wikipedia/commons/d/d7/Wireshark_Icon.png"},
+{name:"Bettercap",category:"Sniffing",desc:"MITM framework.",img:""},
+{name:"Ettercap",category:"Sniffing",desc:"Network sniffing.",img:""},
+{name:"dsniff",category:"Sniffing",desc:"Password sniffing tools.",img:""},
+{name:"Responder",category:"Sniffing",desc:"Network poisoning attacks.",img:""},
+
+/* ================= EXPLOITATION ================= */
+{name:"Metasploit",category:"Exploitation",desc:"Exploit framework.",img:"https://www.metasploit.com/favicon.ico"},
+{name:"Searchsploit",category:"Exploitation",desc:"Exploit database search.",img:""},
+{name:"SET Toolkit",category:"Exploitation",desc:"Social engineering.",img:""},
+{name:"Empire",category:"Exploitation",desc:"Post exploitation framework.",img:""},
+{name:"Mimikatz",category:"Exploitation",desc:"Credential extraction.",img:""},
+{name:"PowerSploit",category:"Exploitation",desc:"PowerShell attacks.",img:""},
+{name:"CrackMapExec",category:"Exploitation",desc:"Network exploitation.",img:""},
+{name:"Impacket",category:"Exploitation",desc:"Protocol exploitation tools.",img:""}
+
+];
+
+
+const categories=["All","Recon","Web","Wireless","Password","Sniffing","Exploitation"];
+let activeCategory="All";
+
+const container=document.getElementById("tools");
+const tabsContainer=document.getElementById("tabs");
+
+/* TABS */
+categories.forEach(cat=>{
+  let btn=document.createElement("button");
+  btn.innerText=cat;
+
+  if(cat==="All") btn.classList.add("active");
+
+  btn.onclick=()=>{
+    activeCategory=cat;
+    document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    renderTools();
+  };
+
+  tabsContainer.appendChild(btn);
+});
+
+/* RENDER */
+function renderTools(){
+  container.innerHTML="";
+  const search=document.getElementById("search").value.toLowerCase();
+
+  toolsData.forEach(tool=>{
+    if(
+      (activeCategory==="All"||tool.category===activeCategory) &&
+      tool.name.toLowerCase().includes(search)
+    ){
+      let div=document.createElement("div");
+      div.className="tool";
+
+      div.innerHTML=`
+        <img src="${tool.img||fallback}" onerror="this.src='${fallback}'">
+        <h3>${tool.name}</h3>
+        <p>${tool.desc}</p>
+      `;
+
+      div.onclick=()=>openModal(tool);
+      container.appendChild(div);
+    }
+  });
+}
+
+document.getElementById("search").addEventListener("keyup",renderTools);
+
+/* MODAL */
+function openModal(tool){
+  document.getElementById("modal").style.display="flex";
+  document.getElementById("title").innerText=tool.name;
+  document.getElementById("desc").innerText=tool.desc;
+
+  let text=">> Initializing "+tool.name+"...\n>> Running modules...\n>> Completed.";
+  let i=0;
+  let box=document.getElementById("typing");
+  box.innerHTML="";
+
+  function type(){
+    if(i<text.length){
+      box.innerHTML+=text.charAt(i);
+      i++;
+      setTimeout(type,20);
+    }
+  }
+  type();
+}
+
+window.onclick=e=>{
+  if(e.target.id==="modal"){
+    document.getElementById("modal").style.display="none";
+  }
+};
+
+renderTools();
+
+/* MATRIX */
+const canvas=document.getElementById('matrix');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const chars="01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize=14;
+const columns=Math.floor(canvas.width/fontSize);
+const drops=Array(columns).fill(1);
+
+function draw(){
+  ctx.fillStyle="rgba(5,11,22,0.08)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#00f7ff";
+  ctx.font=fontSize+"px monospace";
+
+  for(let i=0;i<drops.length;i++){
+    let text=chars[Math.floor(Math.random()*chars.length)];
+    ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+    if(drops[i]*fontSize>canvas.height&&Math.random()>0.975){
+      drops[i]=0;
+    }
+    drops[i]++;
+  }
+}
+setInterval(draw,35);
+
+/* GLOW */
+document.addEventListener("mousemove",e=>{
+  const glow=document.getElementById("cursorGlow");
+  glow.style.left=e.clientX+"px";
+  glow.style.top=e.clientY+"px";
+});
+</script>
+
+</body>
+</html>

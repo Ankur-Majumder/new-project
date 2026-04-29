@@ -166,6 +166,12 @@ nav a:hover::after{
   box-shadow:0 8px 24px rgba(0,0,0,.25);
 }
 
+a.card{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
 .card:hover{
   transform:translateY(-8px) scale(1.02);
   box-shadow:0 0 30px rgba(0,247,255,.22);
@@ -272,7 +278,7 @@ nav a:hover::after{
   <div class="cards">
     <div class="card">Web Security</div>
     <div class="card">Network Analysis</div>
-    <div class="card">Recon Toolkit</div>
+    <a href="recon.html" class="card">Recon Toolkit</a>
   </div>
 </section>
 
