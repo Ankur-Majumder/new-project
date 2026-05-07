@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recon Toolkit | Shadow Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070d;--line:rgba(255,255,255,.08);--text:#eaf0ff;--muted:#a8b3c7;--red:#e11d2e;--red2:#ff4d5e;--cyan:#6be7ff;--shadow:0 20px 60px rgba(0,0,0,.45);--radius:24px;}
+*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;overflow-x:hidden}body{font-family:'Inter',sans-serif;background:radial-gradient(circle at top left, rgba(225,29,46,.18), transparent 28%),radial-gradient(circle at top right, rgba(107,231,255,.14), transparent 22%),linear-gradient(180deg,#03050a 0%,#070b14 45%,#05070d 100%);color:var(--text);min-height:100vh;perspective:1400px;transform-style:preserve-3d}a{color:inherit;text-decoration:none}#stars{position:fixed;inset:0;z-index:-2;width:100%;height:100%}.noise{position:fixed;inset:0;z-index:-1;opacity:.05;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");}
+.orb{position:fixed;border-radius:50%;filter:blur(2px);pointer-events:none;z-index:-1;animation:float 10s ease-in-out infinite alternate;opacity:.45}.orb1{width:180px;height:180px;left:-50px;top:14%;background:radial-gradient(circle, rgba(225,29,46,.35), transparent 70%);animation-duration:12s}.orb2{width:220px;height:220px;right:-60px;top:34%;background:radial-gradient(circle, rgba(107,231,255,.28), transparent 70%);animation-duration:14s}.orb3{width:140px;height:140px;left:18%;bottom:8%;background:radial-gradient(circle, rgba(225,29,46,.18), transparent 70%);animation-duration:16s}.line-line{position:fixed;left:-10%;right:-10%;height:2px;pointer-events:none;z-index:-1;opacity:.22;background:linear-gradient(90deg, transparent, rgba(107,231,255,.9), transparent);filter:blur(.2px);animation:scan 9s linear infinite}.line-line1{top:22%;animation-duration:11s}.line-line2{top:68%;animation-duration:14s;animation-delay:-5s}@keyframes float{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,-22px,20px) scale(1.08)}}@keyframes scan{from{transform:translateX(-12vw)}to{transform:translateX(12vw)}}.wrap{width:min(1200px,92%);margin:0 auto}.top{padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.back{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03)}.brand{display:flex;align-items:center;gap:12px}.brand img{width:44px;height:44px;border-radius:12px;box-shadow:0 0 30px rgba(225,29,46,.25)}.brand h1{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;letter-spacing:.08em}
+.hero{padding:32px 0 16px}.hero h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,4rem);line-height:1.02;margin-bottom:12px}.hero p{color:var(--muted);max-width:760px;line-height:1.8}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 10px}.tab{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--muted);cursor:pointer;font-weight:600}.tab.active{background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;border-color:transparent}.search{width:min(420px,100%);padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);outline:none;margin:14px 0 18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.tool{background:linear-gradient(180deg, rgba(14,18,30,.9), rgba(9,12,20,.95));border:1px solid rgba(255,255,255,.08);border-radius:24px;box-shadow:var(--shadow);padding:22px;text-align:center;cursor:pointer;transition:.35s}.tool:hover{transform:translateY(-12px) rotateX(6deg) rotateY(-8deg) scale(1.03);border-color:rgba(107,231,255,.22);box-shadow:0 32px 70px rgba(0,0,0,.65),0 0 32px rgba(107,231,255,.12), inset 0 1px 0 rgba(255,255,255,.1)}.tool:hover::after{opacity:1;transform:translate(20px,20px)}.tool img{width:54px;height:54px;object-fit:contain;margin:0 auto 10px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35))}.tool h3{margin-bottom:8px}.tool p{color:var(--muted);line-height:1.65;font-size:.95rem}.section{padding:26px 0 44px;transform:translateZ(0)}.panel{margin-top:18px;padding:22px;border-radius:24px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(10px)}.panel h3{font-family:'Space Grotesk',sans-serif;margin-bottom:10px}.panel p,.panel li{color:var(--muted);line-height:1.8}.flow{margin-top:12px;color:var(--cyan);font-weight:700}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.86);justify-content:center;align-items:center;padding:20px;z-index:100}.modal-box{width:min(560px,100%);background:linear-gradient(180deg, rgba(18,24,40,.98), rgba(7,10,18,.99));border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08);transform:translateZ(40px)}.close{margin-top:18px;padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;font-weight:700;cursor:pointer}.tag{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(107,231,255,.2);background:rgba(107,231,255,.07);color:var(--cyan);font-size:.82rem;font-weight:600;margin-bottom:12px}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr)} .tool{padding:14px;border-radius:16px} .tool img{width:38px;height:38px}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas><div class="noise"></div><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div><div class="line-line line-line1"></div><div class="line-line line-line2"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="index.html">← Back to Home</a>
+    <a class="brand" href="index.html"><img src="1000164213.jpg" alt="Shadow Labs logo"><h1>RECON TOOLKIT</h1></a>
+  </div>
+
+  <section class="hero"><div class="panel" style="margin-top:16px;max-width:340px;"><h3>Toolkit Count</h3><p>50+ tools loaded across 7 categories.</p></div>
+    <h2>Recon Toolkit</h2>
+    <p>A dedicated reconnaissance dashboard for security research and tool discovery. This page is separated from the main homepage so your website stays clean and professional.</p>
+  </section>
+
+  <input class="search" id="search" type="text" placeholder="Search tools...">
+  <div class="tabs" id="tabs"></div>
+  <div id="categoryWrap"></div>
+
+  <div class="section">
+    <div class="panel">
+      <h3>Toolkit Purpose</h3>
+      <p>Use this section to present recon categories, learning paths, and tool summaries in an organized premium layout.</p>
+      <div class="flow">Recon → Scan → Analyze → Report</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="panel">
+      <h3>Connect With Us</h3>
+      <p>Follow our social channels for updates, tutorials, and new content.</p>
+      <div class="socials" style="margin-top:14px;">
+        <a href="https://discord.com" target="_blank" rel="noopener">Discord</a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <span class="tag" id="cat"></span>
+    <h3 id="title"></h3>
+    <p id="desc"></p>
+    <div class="panel" style="margin-top:14px;">
+      <h3>Quick Notes</h3>
+      <pre id="typing" style="white-space:pre-wrap;color:var(--muted);font-family:inherit;"></pre>
+    </div>
+    <button class="close" id="close">Close</button>
+  </div>
+</div>
+
+<script>
+const fallback='https://cdn-icons-png.flaticon.com/512/4712/4712027.png';
+const data=[
+{name:'Nmap',category:'Recon',desc:'Network scanning & port discovery.',img:'https://nmap.org/images/nmap-logo-256x256.png'},
+{name:'Amass',category:'Recon',desc:'Subdomain enumeration tool.',img:''},
+{name:'Recon-ng',category:'Recon',desc:'Full recon framework.',img:''},
+{name:'Maltego',category:'Recon',desc:'OSINT & link analysis.',img:'https://www.maltego.com/images/maltego-logo.svg'},
+{name:'theHarvester',category:'Recon',desc:'Emails, domains & OSINT.',img:''},
+{name:'Dnsenum',category:'Recon',desc:'DNS enumeration.',img:''},
+{name:'Fierce',category:'Recon',desc:'DNS scanner.',img:''},
+{name:'Sublist3r',category:'Recon',desc:'Subdomain finder.',img:''},
+{name:'Netdiscover',category:'Recon',desc:'Network discovery.',img:''},
+{name:'Arjun',category:'Recon',desc:'Hidden parameter finder.',img:''},
+{name:'Knockpy',category:'Recon',desc:'Subdomain scanning.',img:''},
+{name:'Masscan',category:'Scanning',desc:'Fast port scanner.',img:''},
+{name:'Zmap',category:'Scanning',desc:'Internet-wide scanning.',img:''},
+{name:'OpenVAS',category:'Scanning',desc:'Vulnerability scanner.',img:''},
+{name:'Nikto',category:'Scanning',desc:'Web server scanner.',img:'https://cirt.net/images/nikto-logo.png'},
+{name:'Lynis',category:'Scanning',desc:'Security auditing.',img:''},
+{name:'Legion',category:'Scanning',desc:'Pentest automation.',img:''},
+{name:'Vuls',category:'Scanning',desc:'Linux vulnerability scanner.',img:''},
+{name:'Burp Suite',category:'Web',desc:'Web proxy & testing.',img:'https://portswigger.net/favicon.ico'},
+{name:'OWASP ZAP',category:'Web',desc:'Web vulnerability scanner.',img:'https://www.zaproxy.org/img/zap-logo.svg'},
+{name:'SQLmap',category:'Web',desc:'SQL injection automation.',img:'https://sqlmap.org/images/sqlmap-logo.png'},
+{name:'Gobuster',category:'Web',desc:'Directory brute forcing.',img:''},
+{name:'Dirb',category:'Web',desc:'Find hidden web paths.',img:''},
+{name:'Dirsearch',category:'Web',desc:'Directory scanner.',img:''},
+{name:'Wfuzz',category:'Web',desc:'Web fuzzing.',img:''},
+{name:'XSStrike',category:'Web',desc:'XSS detection.',img:''},
+{name:'Commix',category:'Web',desc:'Command injection tool.',img:''},
+{name:'Hydra',category:'Password',desc:'Brute force attacks.',img:''},
+{name:'John the Ripper',category:'Password',desc:'Password cracking.',img:''},
+{name:'Hashcat',category:'Password',desc:'GPU cracking tool.',img:'https://hashcat.net/img/hashcat-logo.png'},
+{name:'Medusa',category:'Password',desc:'Fast brute-force tool.',img:''},
+{name:'CeWL',category:'Password',desc:'Custom wordlist generator.',img:''},
+{name:'Aircrack-ng',category:'Wireless',desc:'WiFi cracking suite.',img:'https://www.kali.org/tools/aircrack-ng/images/aircrack-ng-logo.svg'},
+{name:'Reaver',category:'Wireless',desc:'WPS brute-force.',img:''},
+{name:'Kismet',category:'Wireless',desc:'Wireless monitoring.',img:''},
+{name:'Fluxion',category:'Wireless',desc:'WiFi phishing attack.',img:''},
+{name:'Wifite',category:'Wireless',desc:'Automated WiFi hacking.',img:''},
+{name:'Airgeddon',category:'Wireless',desc:'Wireless attack toolkit.',img:''},
+{name:'Wireshark',category:'Sniffing',desc:'Packet analyzer.',img:'https://upload.wikimedia.org/wikipedia/commons/d/d7/Wireshark_Icon.png'},
+{name:'Bettercap',category:'Sniffing',desc:'MITM framework.',img:''},
+{name:'Ettercap',category:'Sniffing',desc:'Network sniffing.',img:''},
+{name:'dsniff',category:'Sniffing',desc:'Password sniffing tools.',img:''},
+{name:'Responder',category:'Sniffing',desc:'Network poisoning attacks.',img:''},
+{name:'Metasploit',category:'Exploitation',desc:'Exploit framework.',img:'https://www.metasploit.com/favicon.ico'},
+{name:'Searchsploit',category:'Exploitation',desc:'Exploit database search.',img:''},
+{name:'SET Toolkit',category:'Exploitation',desc:'Social engineering.',img:''},
+{name:'Empire',category:'Exploitation',desc:'Post exploitation framework.',img:''},
+{name:'Mimikatz',category:'Exploitation',desc:'Credential extraction.',img:''},
+{name:'PowerSploit',category:'Exploitation',desc:'PowerShell attacks.',img:''},
+{name:'CrackMapExec',category:'Exploitation',desc:'Network exploitation.',img:''},
+{name:'Impacket',category:'Exploitation',desc:'Protocol exploitation tools.',img:''}
+];
+const cats=['All','Recon','Scanning','Web','Password','Wireless','Sniffing','Exploitation'];
+let active='All';
+const tabs=document.getElementById('tabs'), wrap=document.getElementById('categoryWrap');
+function renderTabs(){tabs.innerHTML='';cats.forEach(c=>{const b=document.createElement('button');b.className='tab'+(c===active?' active':'');b.textContent=c;b.onclick=()=>{active=c;renderTabs();renderCategories()};tabs.appendChild(b)})}
+function renderCategories(){const s=document.getElementById('search').value.toLowerCase();wrap.innerHTML='';const groups=(active==='All'?cats.slice(1):[active]);groups.forEach(cat=>{const items=data.filter(t=>t.category===cat&&t.name.toLowerCase().includes(s));if(!items.length)return;const sec=document.createElement('div');sec.className='section';sec.innerHTML=`<h3>${cat} <span style="color:var(--cyan);font-size:.95rem;">(${items.length})</span></h3><div class="grid"></div>`;const grid=sec.querySelector('.grid');items.forEach(t=>{const d=document.createElement('div');d.className='tool';d.innerHTML=`<img src="${t.img||fallback}" onerror="this.src='${fallback}'"><h3>${t.name}</h3><p>${t.desc}</p>`;d.onclick=()=>openModal(t);grid.appendChild(d)});wrap.appendChild(sec)})}
+function openModal(t){modal.style.display='flex';document.getElementById('cat').textContent=t.category;document.getElementById('title').textContent=t.name;document.getElementById('desc').textContent=t.desc;const text=`>> Initializing ${t.name}...\n>> Running modules...\n>> Completed.`;let i=0;const box=document.getElementById('typing');box.textContent='';(function type(){if(i<text.length){box.textContent+=text[i++];setTimeout(type,18)}})()}
+const modal=document.getElementById('modal');document.getElementById('close').onclick=()=>modal.style.display='none';modal.onclick=e=>{if(e.target===modal) modal.style.display='none'};document.getElementById('search').addEventListener('input',renderCategories);renderTabs();renderCategories();
+const canvas=document.getElementById('stars'),ctx=canvas.getContext('2d');let stars=[];function resize(){canvas.width=innerWidth;canvas.height=innerHeight;stars=Array.from({length:Math.floor((canvas.width*canvas.height)/9000)},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,z:Math.random()*2+.3,r:Math.random()*1.2+.2}))}function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);for(const s of stars){s.y+=s.z*.25;if(s.y>canvas.height+10){s.y=-10;s.x=Math.random()*canvas.width}ctx.beginPath();ctx.fillStyle=`rgba(255,255,255,${0.2+s.z*.25})`;ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()}requestAnimationFrame(draw)}addEventListener('resize',resize);resize();draw();
+</script>
+</body>
+</html>
