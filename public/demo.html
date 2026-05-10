@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Terminal Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #030712;
+      color: #10b981;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .window {
+      width: 800px;
+      height: 500px;
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 0.5rem;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .header {
+      background-color: #1f2937;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #374151;
+    }
+
+    .dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot.red {
+      background-color: #ef4444;
+    }
+
+    .dot.yellow {
+      background-color: #eab308;
+    }
+
+    .dot.green {
+      background-color: #22c55e;
+    }
+
+    .title {
+      flex: 1;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.875rem;
+      font-family: sans-serif;
+    }
+
+    .content {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 1s forwards 0.5s;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    .logo-text {
+      margin-top: 0.5rem;
+      color: #fff;
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 0.875rem;
+    }
+
+    .line {
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+    }
+
+    @keyframes type {
+      to {
+        width: 100%;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(20, 184, 166, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+      }
+    }
+
+    /* Animation Delays */
+    .l1 {
+      animation: type 1s steps(40, end) forwards 1s;
+    }
+
+    .l2 {
+      animation: type 1s steps(40, end) forwards 2.5s;
+    }
+
+    .l3 {
+      animation: type 1s steps(40, end) forwards 3.5s;
+    }
+
+    .l4 {
+      animation: type 1s steps(40, end) forwards 4.5s;
+    }
+
+    .l5 {
+      animation: type 1s steps(40, end) forwards 5.5s;
+    }
+
+    .l6 {
+      animation: type 1s steps(40, end) forwards 6.5s;
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    .l7 {
+      animation: type 1s steps(40, end) forwards 7.5s;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.2em;
+      background-color: #10b981;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+      opacity: 0;
+    }
+
+    .l7 .cursor {
+      animation: blink 1s step-end infinite 8.5s;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .scanner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: rgba(20, 184, 166, 0.5);
+      box-shadow: 0 0 10px rgba(20, 184, 166, 0.8);
+      animation: scan 3s linear infinite;
+      opacity: 0;
+    }
+
+    .content:hover .scanner {
+      opacity: 1;
+    }
+
+    @keyframes scan {
+      0% {
+        top: 0;
+        opacity: 1;
+      }
+
+      50% {
+        top: 100%;
+        opacity: 1;
+      }
+
+      50.1% {
+        opacity: 0;
+      }
+
+      100% {
+        top: 0;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="window">
+    <div class="header">
+      <div class="dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="title">shadow-labs-engine — bash — 80x24</div>
+    </div>
+    <div class="content">
+      <div class="scanner" style="animation-delay: 2s; opacity: 1;"></div>
+      <div class="logo-container">
+        <img src="images/logo.png" alt="Logo" class="logo">
+        <div class="logo-text">SHADOW LABS</div>
+      </div>
+      <div class="line l1">root@shadow-labs:~# ./scan --target enterprise-corp.com</div>
+      <div class="line l2">[+] Initializing reconnaissance module...</div>
+      <div class="line l3">[+] Enumerating subdomains: Found 142 live endpoints.</div>
+      <div class="line l4">[+] Port scanning... 80, 443, 8080, 8443 open.</div>
+      <div class="line l5">[+] Launching deep vulnerability scan...</div>
+      <div class="line l6">[!] CRITICAL: SQL Injection found in /api/v1/users?id=</div>
+      <div class="line l7">[+] Generating proof-of-concept report... <span class="cursor"></span></div>
+    </div>
+  </div>
+</body>
+
+</html>

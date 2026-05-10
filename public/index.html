@@ -1,1220 +1,911 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>Shadow Labs | 3D Cyber Operations + Shadow AI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #03050a;
-    overflow-x: hidden;
-    color: #f0f3ff;
-    min-height: 100vh;
-  }
-
-#canvas-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  filter: blur(0.5px); 
-}
-
- .ui-overlay {
-  position: relative;
-  z-index: 10;
-  backdrop-filter: blur(3px);  
-}
-  .wrap {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(3, 5, 10, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(90, 200, 250, 0.2);
-  }
-
-  .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 0;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .brand-logo-img {
-    height: 52px;
-    width: auto;
-    border-radius: 14px;
-    filter: drop-shadow(0 0 12px rgba(225, 29, 46, 0.4));
-  }
-
-  .brand h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 1.5rem;
-    background: linear-gradient(135deg, #fff, #6be7ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .navlinks {
-    display: flex;
-    gap: 36px;
-    align-items: center;
-  }
-
-  .navlinks a {
-    text-decoration: none;
-    color: #b0bbd9;
-    font-weight: 500;
-    transition: 0.2s;
-    font-size: 0.95rem;
-    position: relative;
-  }
-
-  .navlinks a:hover {
-    color: #6be7ff;
-  }
-
-  .menu-btn {
-    display: none;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 14px;
-    padding: 10px 14px;
-    color: white;
-    font-size: 1.4rem;
-    cursor: pointer;
-  }
-
-  .hero {
-    padding: 40px 0 60px;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 0.9fr;
-    gap: 48px;
-    align-items: center;
-  }
-
-  .badge-cyber {
-    display: inline-flex;
-    gap: 12px;
-    align-items: center;
-    background: rgba(107, 231, 255, 0.08);
-    border: 1px solid rgba(107, 231, 255, 0.3);
-    padding: 8px 20px;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #6be7ff;
-    margin-bottom: 24px;
-  }
-
-  .badge-cyber span {
-    width: 8px;
-    height: 8px;
-    background: #e11d2e;
-    border-radius: 50%;
-    box-shadow: 0 0 12px #e11d2e;
-  }
-
-  .hero h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2rem, 5vw, 5rem);
-    line-height: 1.1;
-    font-weight: 700;
-    margin-bottom: 24px;
-  }
-
-  .gradient-text {
-    background: linear-gradient(125deg, #fff, #6be7ff, #e11d2e);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .hero p {
-    color: #b0bbd9;
-    line-height: 1.6;
-    font-size: 1rem;
-    max-width: 540px;
-    margin-bottom: 32px;
-  }
-
-  .btn-group {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    padding: 12px 24px;
-    border-radius: 40px;
-    font-weight: 600;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-
-  .btn-primary {
-    background: linear-gradient(95deg, #e11d2e, #c41626);
-    box-shadow: 0 12px 28px rgba(225, 29, 46, 0.35);
-    color: white;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-3px);
-  }
-
-  .btn-outline {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(107, 231, 255, 0.5);
-    color: #cee9ff;
-  }
-
-  .btn-outline:hover {
-    background: rgba(107, 231, 255, 0.1);
-  }
-
-  /* ========== TRUE 3D CARD WITH PERSPECTIVE ========== */
-  .hero-3d-card {
-    position: relative;
-    width: 100%;
-    perspective: 1200px;
-    perspective-origin: center center;
-  }
-
-  .floating-3d {
-    position: relative;
-    width: 100%;
-    background: linear-gradient(145deg, rgba(10, 18, 35, 0.95), rgba(2, 5, 12, 0.98));
-    border-radius: 32px;
-    border: 1px solid rgba(107, 231, 255, 0.4);
-    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    padding: 28px;
-    transform-style: preserve-3d;
-    transition: transform 0.1s ease-out;
-    will-change: transform;
-  }
-
-  /* Animated gradient border */
-  .floating-3d::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #e11d2e, #6be7ff, #e11d2e, #6be7ff);
-    border-radius: 34px;
-    opacity: 0.2;
-    z-index: -1;
-    animation: borderPulse 3s ease-in-out infinite;
-  }
-
-  @keyframes borderPulse {
-    0%, 100% { opacity: 0.15; }
-    50% { opacity: 0.35; }
-  }
-
-  /* Inner glow */
-  .floating-3d::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 30% 40%, rgba(107, 231, 255, 0.08), transparent 70%);
-    border-radius: 32px;
-    pointer-events: none;
-  }
-
-  .card-glow-orb {
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 180px;
-    height: 180px;
-    background: radial-gradient(circle, rgba(225, 29, 46, 0.3), transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .card-glow-orb-bottom {
-    position: absolute;
-    bottom: -50px;
-    left: -50px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(107, 231, 255, 0.25), transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 6px 14px;
-    border-radius: 40px;
-    border-left: 2px solid #6be7ff;
-    font-size: 0.7rem;
-    position: relative;
-    z-index: 2;
-  }
-
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    background: #6be7ff;
-    border-radius: 50%;
-    box-shadow: 0 0 12px #6be7ff;
-    animation: pulseDot 1.5s infinite;
-  }
-
-  @keyframes pulseDot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  .metrics-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin: 18px 0;
-    padding: 14px 0;
-    border-top: 1px solid rgba(107, 231, 255, 0.2);
-    border-bottom: 1px solid rgba(107, 231, 255, 0.2);
-    position: relative;
-    z-index: 2;
-  }
-
-  .metric-value {
-    font-size: 1.2rem;
-    font-weight: 800;
-    font-family: 'Space Grotesk', monospace;
-    background: linear-gradient(135deg, #fff, #6be7ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .metric-label {
-    font-size: 0.6rem;
-    color: #8a98b5;
-  }
-
-  .feature-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 18px 0;
-    position: relative;
-    z-index: 2;
-  }
-
-  .feature-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.72rem;
-    color: #c0cbe8;
-  }
-
-  .feature-item i {
-    width: 22px;
-    color: #6be7ff;
-  }
-
-  .stats-3d {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 18px;
-    position: relative;
-    z-index: 2;
-  }
-
-  .stat-item {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 18px;
-    padding: 12px 6px;
-    text-align: center;
-    border: 1px solid rgba(107, 231, 255, 0.15);
-    font-size: 0.75rem;
-    transition: all 0.2s;
-  }
-
-  .stat-item i {
-    margin-right: 5px;
-    color: #6be7ff;
-  }
-
-  .stat-item:hover {
-    border-color: rgba(107, 231, 255, 0.5);
-    background: rgba(107, 231, 255, 0.08);
-  }
-
-  .section {
-    padding: 40px 0 25px;
-  }
-
-  .section-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(1.6rem, 4vw, 2.8rem);
-    font-weight: 700;
-    margin-bottom: 16px;
-  }
-
-  .section-sub {
-    color: #94a3c2;
-    max-width: 680px;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    font-size: 0.95rem;
-  }
-
-  .grid-3d {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-  }
-
-  .glow-card {
-    background: rgba(8, 12, 22, 0.75);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    padding: 24px;
-    border: 1px solid rgba(107, 231, 255, 0.18);
-    transition: all 0.35s;
-  }
-
-  .glow-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(107, 231, 255, 0.5);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(107,231,255,0.2);
-  }
-
-  .card-icon {
-    font-size: 2rem;
-    margin-bottom: 16px;
-  }
-
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin: 25px 0;
-  }
-
-  .stat-block {
-    text-align: center;
-    padding: 20px 12px;
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .stat-number {
-    font-size: 1.8rem;
-    font-weight: 800;
-    font-family: 'Space Grotesk', sans-serif;
-    background: linear-gradient(135deg, #fff, #6be7ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-  }
-
-  .form-group input, .form-group textarea {
-    width: 100%;
-    background: rgba(12, 20, 32, 0.8);
-    border: 1px solid rgba(107, 231, 255, 0.2);
-    border-radius: 16px;
-    padding: 14px 18px;
-    color: white;
-    font-family: inherit;
-    outline: none;
-    font-size: 0.9rem;
-  }
-
-  .footer {
-    margin-top: 25px;
-    border-top: 1px solid rgba(107, 231, 255, 0.15);
-    padding: 20px 0;
-  }
-
-  .footer-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .copyright {
-    color: #7e8aa8;
-    font-size: 0.8rem;
-  }
-
-  .socials-footer {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .social-icon-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 40px;
-    border: 1px solid rgba(107, 231, 255, 0.2);
-    text-decoration: none;
-    color: #ccd6f0;
-    font-weight: 500;
-    font-size: 0.8rem;
-    transition: all 0.25s ease;
-  }
-
-  .social-icon-link:hover {
-    transform: translateY(-2px);
-    background: rgba(107, 231, 255, 0.12);
-    border-color: #6be7ff;
-  }
-
-  /* Chatbot Styles */
-  .shadow-chatbot {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 1000;
-  }
-
-  .chat-toggle {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #e11d2e, #ff3b4a);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(225, 29, 46, 0.5);
-    border: 1px solid rgba(107, 231, 255, 0.3);
-  }
-
-  .chat-toggle i {
-    font-size: 28px;
-    color: white;
-  }
-
-  .chat-window {
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    width: 360px;
-    height: 500px;
-    background: rgba(6, 12, 24, 0.98);
-    backdrop-filter: blur(24px);
-    border-radius: 24px;
-    border: 1px solid rgba(107, 231, 255, 0.3);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transform: scale(0);
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    transform-origin: bottom right;
-  }
-
-  .chat-window.open {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  .chat-header {
-    background: linear-gradient(135deg, rgba(225, 29, 46, 0.2), rgba(107, 231, 255, 0.1));
-    padding: 16px;
-    border-bottom: 1px solid rgba(107, 231, 255, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .chat-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #e11d2e, #6be7ff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
-  }
-
-  .chat-header-info h4 {
-    font-size: 1rem;
-  }
-
-  .chat-header-info p {
-    font-size: 0.7rem;
-    color: #6be7ff;
-  }
-
-  .chat-close {
-    margin-left: auto;
-    cursor: pointer;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-  }
-
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .message {
-    display: flex;
-    gap: 10px;
-  }
-
-  .message.bot .msg-avatar {
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, #e11d2e, #6be7ff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-  }
-
-  .message.user {
-    justify-content: flex-end;
-  }
-
-  .message.user .msg-bubble {
-    background: linear-gradient(135deg, rgba(225, 29, 46, 0.2), rgba(107, 231, 255, 0.1));
-    border: 1px solid rgba(107, 231, 255, 0.3);
-    border-radius: 18px 18px 4px 18px;
-  }
-
-  .message.bot .msg-bubble {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(107, 231, 255, 0.2);
-    border-radius: 18px 18px 18px 4px;
-  }
-
-  .msg-bubble {
-    max-width: 80%;
-    padding: 10px 14px;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: #e0e8ff;
-  }
-
-  .chat-input-area {
-    padding: 16px;
-    border-top: 1px solid rgba(107, 231, 255, 0.2);
-    display: flex;
-    gap: 10px;
-  }
-
-  .chat-input-area input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(107, 231, 255, 0.2);
-    border-radius: 24px;
-    padding: 10px 16px;
-    color: white;
-    font-family: inherit;
-    outline: none;
-  }
-
-  .chat-send {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #e11d2e, #ff3b4a);
-    border: none;
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-  }
-
-  .typing-indicator {
-    display: flex;
-    gap: 4px;
-    padding: 8px 12px;
-  }
-
-  .typing-indicator span {
-    width: 6px;
-    height: 6px;
-    background: #6be7ff;
-    border-radius: 50%;
-    animation: typing 1.4s infinite;
-  }
-
-  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes typing {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-    30% { transform: translateY(-8px); opacity: 1; }
-  }
-
-  .modal {
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(16px);
-    z-index: 200;
-    padding: 20px;
-  }
-
-  .modal.active {
-    display: flex;
-  }
-
-  .modal-content {
-    background: rgba(6, 10, 20, 0.96);
-    border: 1px solid rgba(107, 231, 255, 0.4);
-    border-radius: 28px;
-    padding: 28px;
-    max-width: 440px;
-    width: 100%;
-    text-align: center;
-  }
-
-  @media (max-width: 768px) {
-    .wrap { padding: 0 20px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
-    .navlinks {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 75px;
-      left: 16px;
-      right: 16px;
-      background: rgba(3, 5, 10, 0.98);
-      backdrop-filter: blur(24px);
-      border-radius: 24px;
-      padding: 20px;
-      gap: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Shadow Labs | The Modern Penetration Testing Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6', // Teal
+              600: '#0d9488',
+              700: '#0f766e',
+              900: '#134e4a',
+            },
+            accent: {
+              500: '#6366f1', // Indigo
+              600: '#4f46e5',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+            'float': '0 20px 40px -10px rgba(0, 0, 0, 0.5)',
+          }
+        }
+      }
     }
-    .navlinks.show { display: flex; }
-    .menu-btn { display: block; }
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
-    .contact-grid { grid-template-columns: 1fr; }
-    .footer-inner { flex-direction: column; text-align: center; }
-    /* Removed perspective: none and transform: none to allow 3D card movement on mobile */
-}
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #f3f4f6;
+      background-color: #030712;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
 
-  @media (max-width: 480px) {
-    .chat-window { width: 320px; right: -10px; }
-  }
-</style>
+    .bg-pattern {
+      background-image: radial-gradient(#1f2937 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(135deg, #030712 0%, #111827 100%);
+    }
+
+    .glass-nav {
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(31, 41, 55, 0.5);
+    }
+
+    .feature-card {
+      transition: all 0.3s ease;
+      background: #111827;
+      border: 1px solid #1f2937;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+      border-color: #374151;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #f8fafc, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .floating-img {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    /* Video Player Animations */
+    .scan-line {
+      animation: scan 3s linear infinite;
+    }
+
+    @keyframes scan {
+      0% {
+        transform: translateY(0px);
+      }
+
+      100% {
+        transform: translateY(320px);
+      }
+    }
+
+    .logo-pulse {
+      animation: logoPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.7;
+        filter: drop-shadow(0 0 10px rgba(20, 184, 166, 0.3));
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 1;
+        filter: drop-shadow(0 0 25px rgba(20, 184, 166, 0.9));
+      }
+    }
+
+    .type-line {
+      display: inline;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .cursor-blink::after {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 1.2em;
+      background-color: #10b981;
+      vertical-align: middle;
+      margin-left: 4px;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-<body>
 
-<div id="canvas-container"></div>
+<body class="antialiased overflow-x-hidden">
 
-<div class="ui-overlay">
-  <header>
-    <div class="wrap nav">
-      <div class="brand">
-        <img src="1000164213.jpg" alt="Shadow Labs Logo" class="brand-logo-img" onerror="this.src='https://placehold.co/200x200/1a1a2e/e11d2e?text=SL'">
-        <h1>SHADOW LABS</h1>
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition">
+          <img src="./images/logo.png" alt="Shadow Labs Logo" class="w-10 h-10 rounded-lg shadow-md object-cover">
+          <span class="text-xl font-bold text-white tracking-tight">Shadow Labs</span>
+        </div>
+
+        <nav class="hidden lg:flex items-center gap-2">
+          <a href="#platform"
+            class="text-sm font-semibold text-gray-400 hover:text-brand-600 hover:bg-brand-900/30 px-3 py-2 rounded-md transition cursor-pointer">Platform</a>
+          <a href="#platform"
+            class="text-sm font-semibold text-gray-400 hover:text-brand-600 hover:bg-brand-900/30 px-3 py-2 rounded-md transition cursor-pointer">Tools</a>
+          <a href="#platform"
+            class="text-sm font-semibold text-gray-400 hover:text-brand-600 hover:bg-brand-900/30 px-3 py-2 rounded-md transition cursor-pointer">Workflow</a>
+          <a href="#platform"
+            class="text-sm font-semibold text-gray-400 hover:text-brand-600 hover:bg-brand-900/30 px-3 py-2 rounded-md transition cursor-pointer">Pricing</a>
+          <a href="#platform"
+            class="text-sm font-semibold text-gray-400 hover:text-brand-600 hover:bg-brand-900/30 px-3 py-2 rounded-md transition cursor-pointer">Resources</a>
+        </nav>
+
+        <div class="hidden lg:flex items-center gap-3">
+          <a href="#"
+            class="text-sm font-semibold text-gray-400 hover:text-white px-4 py-2 hover:bg-gray-800 rounded-md transition cursor-pointer">Log
+            in</a>
+          <a href="#"
+            class="btn-primary text-white text-sm font-semibold px-5 py-2.5 rounded-md shadow-sm hover:-translate-y-0.5 transition transform cursor-pointer">Start
+            Free Trial</a>
+        </div>
+
+        <button
+          class="lg:hidden text-gray-400 text-2xl hover:text-brand-600 transition p-2 relative z-50 cursor-pointer"
+          id="menuBtn" aria-label="Toggle Menu">
+          <i class="fas fa-bars" id="menuIcon"></i>
+        </button>
       </div>
-      <nav class="navlinks" id="navlinks">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#services">Operations</a>
-        <a href="#courses">Academy</a>
-        <a href="#contact">Secure Comms</a>
-      </nav>
-      <div class="menu-btn" id="menuBtn">⋮☰</div>
+
+      <!-- Mobile Menu -->
+      <div id="mobileMenu"
+        class="lg:hidden absolute top-full left-0 w-full bg-gray-900 border-b border-gray-800 shadow-xl hidden flex-col transition-all duration-300 origin-top">
+        <div class="px-6 py-6 flex flex-col gap-3">
+          <a href="#platform"
+            class="text-base font-medium text-gray-200 hover:text-brand-600 hover:bg-gray-950 px-4 py-3 rounded-lg mobile-link transition">Platform</a>
+          <a href="#platform"
+            class="text-base font-medium text-gray-200 hover:text-brand-600 hover:bg-gray-950 px-4 py-3 rounded-lg mobile-link transition">Tools</a>
+          <a href="#platform"
+            class="text-base font-medium text-gray-200 hover:text-brand-600 hover:bg-gray-950 px-4 py-3 rounded-lg mobile-link transition">Workflow</a>
+          <a href="#platform"
+            class="text-base font-medium text-gray-200 hover:text-brand-600 hover:bg-gray-950 px-4 py-3 rounded-lg mobile-link transition">Pricing</a>
+          <a href="#platform"
+            class="text-base font-medium text-gray-200 hover:text-brand-600 hover:bg-gray-950 px-4 py-3 rounded-lg mobile-link transition">Resources</a>
+          <div class="h-px bg-gray-800 my-2"></div>
+          <a href="#"
+            class="text-base font-medium text-gray-200 hover:text-brand-600 hover:bg-gray-950 px-4 py-3 rounded-lg mobile-link transition text-center border border-gray-800">Log
+            in</a>
+          <a href="#"
+            class="btn-primary text-white text-base font-medium px-4 py-3 rounded-lg shadow-sm text-center mobile-link transition mt-2">Start
+            Free Trial</a>
+        </div>
+      </div>
     </div>
   </header>
 
   <main>
-    <section class="hero" id="home">
-      <div class="wrap hero-grid">
-        <div>
-          <div class="badge-cyber"><span></span> ACTIVE THREAT DEFENSE</div>
-          <h2>Penetrate. Defend. <span class="gradient-text">Dominate.</span></h2>
-          <p>Enterprise-grade cybersecurity, red team operations, and immersive training. Shadow Labs delivers next-generation protection with 3D threat visualization and real-time intelligence.</p>
-          <div class="btn-group">
-            <a href="#services" class="btn btn-primary">⚡ Deploy Security</a>
-            <a href="#courses" class="btn btn-outline" id="showCourseModalBtn">🎓 Course Access</a>
-          </div>
-        </div>
-        
-        <!-- TRUE 3D INTERACTIVE CARD -->
-        <div class="hero-3d-card" id="card3dContainer">
-          <div class="floating-3d" id="card3d">
-            <div class="card-glow-orb"></div>
-            <div class="card-glow-orb-bottom"></div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <div class="status-badge">
-                <span class="pulse-dot"></span>
-                <span>ACTIVE DIRECTORY • LIVE</span>
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 lg:pt-40 lg:pb-28 hero-gradient relative overflow-hidden">
+      <div class="absolute inset-0 bg-pattern opacity-40"></div>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+
+          <div class="max-w-2xl">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-900/30 border border-brand-800 text-brand-300 text-sm font-semibold mb-6">
+              <span class="relative flex h-2 w-2">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+              </span>
+              Platform Update 2.0 is Live
+            </div>
+
+            <h1
+              class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.2] mb-6">
+              The Reliable <br class="hidden sm:block">
+              <span class="text-gradient">Penetration Testing</span><br>
+              Platform
+            </h1>
+
+            <p class="text-lg text-gray-400 mb-8 max-w-lg leading-relaxed">
+              Equip your security team with powerful, easy-to-use tools. Discover, exploit, and report vulnerabilities
+              with high precision and automated workflows.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button
+                class="btn-primary text-white font-semibold px-8 py-3.5 rounded-lg shadow-md text-center flex justify-center items-center gap-2">
+                Start your free trial <i class="fas fa-arrow-right text-sm"></i>
+              </button>
+              <button
+                class="bg-gray-900 text-gray-300 border border-gray-700 font-semibold px-8 py-3.5 rounded-lg shadow-sm hover:bg-gray-950 transition text-center">
+                Book a Demo
+              </button>
+            </div>
+
+            <div
+              class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm text-gray-500 font-medium">
+              <div class="flex items-center gap-2"><i class="fas fa-check text-brand-500"></i> No credit card required
               </div>
-              <i class="fas fa-shield-haltered" style="color: #e11d2e; font-size: 1.3rem;"></i>
+              <div class="flex items-center gap-2"><i class="fas fa-check text-brand-500"></i> 14-day full access</div>
             </div>
-            <div style="margin: 5px 0 8px 0;">
-              <div style="font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; font-family: 'Space Grotesk', sans-serif; line-height: 1.2;">
-                ZERO TRUST<br>
-                <span style="background: linear-gradient(135deg, #6be7ff, #e11d2e); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: clamp(1.2rem, 4vw, 1.8rem);">ARCHITECTURE</span>
+          </div>
+
+          <div class="relative lg:ml-auto w-full max-w-lg mx-auto perspective-1000">
+            <div class="absolute inset-0 bg-brand-500/20 rounded-full blur-3xl transform scale-110"></div>
+
+            <!-- Simulated Video Player Element -->
+            <div
+              class="relative z-10 rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-700 bg-gray-900 group transform transition-transform hover:scale-[1.02] duration-500">
+
+              <!-- Video Player Header bar (Mac style) -->
+              <div class="bg-gray-800 px-4 py-3 flex items-center justify-between border-b border-gray-700">
+                <div class="flex space-x-2">
+                  <div class="w-3 h-3 rounded-full bg-red-500/80 shadow-sm"></div>
+                  <div class="w-3 h-3 rounded-full bg-yellow-500/80 shadow-sm"></div>
+                  <div class="w-3 h-3 rounded-full bg-green-500/80 shadow-sm"></div>
+                </div>
+                <div class="text-xs text-gray-400 font-mono font-semibold tracking-wider flex items-center gap-2">
+                  <i class="fas fa-video text-[10px] text-red-500 animate-pulse"></i> REC
+                </div>
+                <div class="w-10"></div> <!-- Spacer for balance -->
+              </div>
+
+              <!-- Video Content Area -->
+              <div
+                class="relative p-3 sm:p-6 font-mono text-[10px] sm:text-xs md:text-sm h-[300px] sm:h-[340px] bg-[#030712] overflow-hidden flex flex-col justify-start text-gray-300">
+
+                <!-- Scanning line effect -->
+                <div
+                  class="absolute top-0 left-0 w-full h-[2px] bg-brand-500/40 shadow-[0_0_15px_rgba(20,184,166,0.8)] z-20 scan-line pointer-events-none">
+                </div>
+
+                <!-- Logo inside the video -->
+                <div
+                  class="absolute top-4 right-4 sm:top-6 sm:right-6 flex-col items-center z-10 logo-pulse pointer-events-none bg-gray-900/50 p-2 sm:p-3 rounded-xl backdrop-blur-sm border border-gray-800/50 hidden sm:flex">
+                  <img src="./images/logo.png" alt="Shadow Labs Logo"
+                    class="w-10 h-10 sm:w-16 sm:h-16 rounded-xl shadow-[0_0_15px_rgba(20,184,166,0.5)] object-cover">
+                  <span class="text-[7px] sm:text-[9px] font-bold text-white mt-1 sm:mt-2 tracking-widest">SHADOW
+                    LABS</span>
+                </div>
+
+                <!-- Terminal Typing Animation Container -->
+                <div id="videoTerminal"
+                  class="flex flex-col gap-1.5 sm:gap-2 z-10 relative h-full w-full pr-2 sm:pr-24 overflow-y-auto scrollbar-hide pb-8">
+                  <!-- Lines injected by JS -->
+                </div>
+
+                <!-- Fake Video Progress Bar -->
+                <div class="absolute bottom-0 left-0 w-full h-1.5 bg-gray-800 z-30">
+                  <div class="h-full bg-brand-500 w-full animate-[progress_15s_linear_infinite] origin-left"></div>
+                </div>
+              </div>
+
+              <!-- Video Overlay Play Button (decorative) -->
+              <div
+                class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 cursor-pointer">
+                <div
+                  class="w-16 h-16 rounded-full bg-brand-500/90 text-white flex items-center justify-center shadow-[0_0_30px_rgba(20,184,166,0.6)] transform hover:scale-110 transition-transform">
+                  <i class="fas fa-play ml-1 text-xl"></i>
+                </div>
               </div>
             </div>
-            <div style="height: 2px; background: linear-gradient(90deg, #e11d2e, #6be7ff, transparent); width: 100%; margin: 12px 0;"></div>
-            <div class="metrics-row">
-              <div class="metric"><div class="metric-value">99.98%</div><div class="metric-label">THREAT BLOCK</div></div>
-              <div class="metric"><div class="metric-value">&lt;0.3s</div><div class="metric-label">RESPONSE SLA</div></div>
-              <div class="metric"><div class="metric-value">24/7</div><div class="metric-label">SOC MONITORING</div></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Certifications & Standards -->
+    <section class="py-10 border-b border-gray-800 bg-gray-900/50">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">Built to enterprise security standards
+        </p>
+        <div
+          class="flex flex-wrap justify-center items-center gap-6 md:gap-12 text-gray-300 font-semibold text-sm sm:text-base">
+          <div class="flex items-center gap-3 transition-transform hover:-translate-y-1 duration-300">
+            <div
+              class="w-10 h-10 rounded-full bg-gray-900 shadow-sm flex items-center justify-center border border-gray-800">
+              <i class="fas fa-shield-alt text-brand-500 text-lg"></i>
             </div>
-            <div class="feature-list">
-              <div class="feature-item"><i class="fas fa-fingerprint"></i> <span>Privileged Access Mgmt</span></div>
-              <div class="feature-item"><i class="fas fa-network-wired"></i> <span>Micro-segmentation</span></div>
-              <div class="feature-item"><i class="fas fa-eye"></i> <span>Continuous Validation</span></div>
-              <div class="feature-item"><i class="fas fa-chart-line"></i> <span>Real-time Analytics</span></div>
-              <div class="feature-item"><i class="fas fa-key"></i> <span>Just-in-Time Access</span></div>
-              <div class="feature-item"><i class="fas fa-shield"></i> <span>Kerberos Hardening</span></div>
+            SOC 2 Type II
+          </div>
+          <div class="hidden sm:block w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          <div class="flex items-center gap-3 transition-transform hover:-translate-y-1 duration-300">
+            <div
+              class="w-10 h-10 rounded-full bg-gray-900 shadow-sm flex items-center justify-center border border-gray-800">
+              <i class="fas fa-award text-brand-500 text-lg"></i>
             </div>
-            <div class="stats-3d">
-              <div class="stat-item"><i class="fas fa-certificate"></i> <strong>AI Threat Defense</strong><br><span style="font-size: 0.6rem;">2x Security</span></div>
-              <div class="stat-item"><i class="fas fa-globe"></i> <strong>Global SOC</strong><br><span style="font-size: 0.6rem;">24/7 Coverage</span></div>
+            ISO 27001
+          </div>
+          <div class="hidden sm:block w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          <div class="flex items-center gap-3 transition-transform hover:-translate-y-1 duration-300">
+            <div
+              class="w-10 h-10 rounded-full bg-gray-900 shadow-sm flex items-center justify-center border border-gray-800">
+              <i class="fas fa-lock text-brand-500 text-lg"></i>
+            </div>
+            GDPR Compliant
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Platform Features -->
+    <section id="platform" class="py-24 bg-gray-950">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Everything you need to secure your assets</h2>
+          <p class="text-lg text-gray-400">Shadow Labs combines industry-leading scanners with automated exploitation
+            tools to streamline your entire security testing workflow.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 relative z-0">
+
+          <!-- Dashed Arrow 1 (Desktop only) -->
+          <div
+            class="hidden md:block absolute top-[25%] left-[30%] w-[12%] z-10 text-brand-300 pointer-events-none opacity-80">
+            <svg viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="w-full h-auto overflow-visible drop-shadow-sm">
+              <path d="M0,30 Q50,-15 95,15" stroke="currentColor" stroke-width="2.5" stroke-dasharray="6,6" fill="none"
+                stroke-linecap="round" />
+              <path d="M85,3 L98,17 L75,22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <!-- Dashed Arrow 2 (Desktop only) -->
+          <div
+            class="hidden md:block absolute top-[30%] left-[63%] w-[12%] z-10 text-brand-300 pointer-events-none opacity-80">
+            <svg viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="w-full h-auto overflow-visible drop-shadow-sm">
+              <path d="M0,10 Q50,55 95,20" stroke="currentColor" stroke-width="2.5" stroke-dasharray="6,6" fill="none"
+                stroke-linecap="round" />
+              <path d="M80,35 L98,18 L75,10" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <div class="feature-card p-8 rounded-2xl shadow-soft relative z-20 bg-gray-900">
+            <div class="w-12 h-12 bg-brand-900/50 rounded-xl flex items-center justify-center mb-6">
+              <i class="fas fa-globe text-brand-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Attack Surface Mapping</h3>
+            <p class="text-gray-400 leading-relaxed text-sm">Automatically discover subdomains, open ports, and exposed
+              services across your entire infrastructure before attackers do.</p>
+          </div>
+
+          <div class="feature-card p-8 rounded-2xl shadow-soft relative z-20 bg-gray-900">
+            <div class="w-12 h-12 bg-accent-900/30 rounded-xl flex items-center justify-center mb-6"
+              style="background-color: #312e81;">
+              <i class="fas fa-bug text-accent-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Deep Vulnerability Scanning</h3>
+            <p class="text-gray-400 leading-relaxed text-sm">Perform authenticated DAST scanning for modern web apps and
+              APIs to detect SQLi, XSS, SSRF, and 75+ other flaw categories.</p>
+          </div>
+
+          <div class="feature-card p-8 rounded-2xl shadow-soft relative z-20 bg-gray-900">
+            <div class="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mb-6">
+              <i class="fas fa-bolt text-gray-300 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Automated Exploitation</h3>
+            <p class="text-gray-400 leading-relaxed text-sm">Safely validate vulnerabilities with one-click automated
+              exploitation to confirm risk and generate concrete proof-of-concept evidence.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- How it Works Section with Connecting Line -->
+    <section class="py-32 bg-gray-900 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        <div class="text-center max-w-3xl mx-auto mb-20 relative z-10">
+          <div class="text-brand-500 font-semibold mb-2 tracking-widest text-sm uppercase">End-to-End Workflow</div>
+          <h2 class="text-3xl lg:text-5xl font-bold text-white mb-6">How Shadow Labs Works</h2>
+          <p class="text-lg text-gray-400">A unified, continuous workflow from initial discovery to final reporting,
+            built for offensive security teams.</p>
+        </div>
+
+        <!-- The Connecting Line Container -->
+        <div
+          class="absolute left-6 md:left-1/2 top-[180px] bottom-10 w-[2px] bg-gradient-to-b from-brand-500/0 via-brand-500/50 to-brand-500/0 transform md:-translate-x-1/2 z-0 hidden md:block">
+          <div class="w-[2px] h-32 bg-brand-400 blur-[1px] opacity-80 rounded-full animate-flow-down"></div>
+        </div>
+
+        <!-- Mobile Connecting Line -->
+        <div
+          class="absolute left-[21px] top-[180px] bottom-10 w-[2px] bg-gradient-to-b from-brand-500/0 via-brand-500/50 to-brand-500/0 z-0 md:hidden block">
+        </div>
+
+        <div class="space-y-28 relative z-10">
+
+          <!-- Step 1 -->
+          <div class="flex flex-col md:flex-row items-center justify-between gap-12 group">
+            <div class="md:w-1/2 md:pr-16 md:text-right relative ml-12 md:ml-0">
+              <div class="text-brand-500 font-semibold mb-2 tracking-wider text-sm uppercase">Phase 1</div>
+              <h3 class="text-3xl font-bold text-white mb-4">Attack surface mapping and recon</h3>
+              <p class="text-gray-400 leading-relaxed mb-6 text-lg">Powerful, connected scanners for mapping exposed
+                network assets and web apps, including cloud and APIs. Global view of potential jumping-off points for
+                deeper testing.</p>
+              <ul class="space-y-3 md:inline-block text-left md:text-right text-gray-300 font-medium">
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-brand-500"></i></span>Subdomain Finder <i
+                    class="fas fa-check text-brand-500 hidden md:inline-block"></i></li>
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-brand-500"></i></span>Port Scanner <i
+                    class="fas fa-check text-brand-500 hidden md:inline-block"></i></li>
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-brand-500"></i></span>URL Fuzzer <i
+                    class="fas fa-check text-brand-500 hidden md:inline-block"></i></li>
+              </ul>
+              <!-- Node Point -->
+              <div
+                class="hidden md:flex absolute right-[-21px] top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-[3px] border-brand-500 rounded-full items-center justify-center z-20 shadow-[0_0_20px_rgba(20,184,166,0.6)] group-hover:scale-110 group-hover:bg-brand-900/30 transition-all duration-300">
+                <div class="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_white]"></div>
+              </div>
+              <!-- Mobile Node Point -->
+              <div
+                class="md:hidden absolute left-[-38px] top-4 w-6 h-6 bg-gray-900 border-[2px] border-brand-500 rounded-full flex items-center justify-center z-20 shadow-[0_0_15px_rgba(20,184,166,0.5)]">
+                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <div class="md:w-1/2 md:pl-16 relative ml-12 md:ml-0">
+              <div class="absolute inset-0 bg-brand-500/10 rounded-full blur-3xl"></div>
+              <img src="./images/recon.png" alt="Reconnaissance"
+                class="w-full rounded-2xl border border-gray-800 shadow-2xl relative z-10 group-hover:-translate-y-2 transition-transform duration-500 ring-1 ring-white/10">
             </div>
           </div>
+
+          <!-- Step 2 -->
+          <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-12 group">
+            <div class="md:w-1/2 md:pl-16 relative ml-12 md:ml-0">
+              <div class="text-accent-500 font-semibold mb-2 tracking-wider text-sm uppercase">Phase 2</div>
+              <h3 class="text-3xl font-bold text-white mb-4">Comprehensive vulnerability scanning</h3>
+              <p class="text-gray-400 leading-relaxed mb-6 text-lg">Proprietary scanners delivering benchmark-proven
+                detection accuracy. Deep, authenticated web app scanning for detecting vulnerabilities behind login with
+                out-of-band detection.</p>
+              <ul class="space-y-3 text-gray-300 font-medium">
+                <li class="flex items-center gap-3"><i class="fas fa-check text-accent-500"></i> Authenticated DAST
+                  scanning</li>
+                <li class="flex items-center gap-3"><i class="fas fa-check text-accent-500"></i> Machine Learning FP
+                  reduction</li>
+                <li class="flex items-center gap-3"><i class="fas fa-check text-accent-500"></i> Network & Cloud
+                  scanning</li>
+              </ul>
+              <!-- Node Point -->
+              <div
+                class="hidden md:flex absolute left-[-21px] top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-[3px] border-accent-500 rounded-full items-center justify-center z-20 shadow-[0_0_20px_rgba(99,102,241,0.6)] group-hover:scale-110 group-hover:bg-accent-900/30 transition-all duration-300">
+                <div class="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_white]"></div>
+              </div>
+              <!-- Mobile Node Point -->
+              <div
+                class="md:hidden absolute left-[-38px] top-4 w-6 h-6 bg-gray-900 border-[2px] border-accent-500 rounded-full flex items-center justify-center z-20 shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <div class="md:w-1/2 md:pr-16 relative ml-12 md:ml-0">
+              <div class="absolute inset-0 bg-accent-500/10 rounded-full blur-3xl"></div>
+              <img src="./images/vuln.png" alt="Vulnerability Scanning"
+                class="w-full rounded-2xl border border-gray-800 shadow-2xl relative z-10 group-hover:-translate-y-2 transition-transform duration-500 ring-1 ring-white/10">
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex flex-col md:flex-row items-center justify-between gap-12 group">
+            <div class="md:w-1/2 md:pr-16 md:text-right relative ml-12 md:ml-0">
+              <div class="text-red-500 font-semibold mb-2 tracking-wider text-sm uppercase">Phase 3</div>
+              <h3 class="text-3xl font-bold text-white mb-4">Vulnerability exploitation</h3>
+              <p class="text-gray-400 leading-relaxed mb-6 text-lg">Automatic exploitation of new, critical CVEs for
+                validating risk and extracting evidence. Purpose-built functionality to safely confirm exploitability of
+                security issues.</p>
+              <ul class="space-y-3 md:inline-block text-left md:text-right text-gray-300 font-medium">
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-red-500"></i></span>Sniper: Auto Exploiter <i
+                    class="fas fa-check text-red-500 hidden md:inline-block"></i></li>
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-red-500"></i></span>Safe risk validation <i
+                    class="fas fa-check text-red-500 hidden md:inline-block"></i></li>
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-red-500"></i></span>Evidence-rich PoCs <i
+                    class="fas fa-check text-red-500 hidden md:inline-block"></i></li>
+              </ul>
+              <!-- Node Point -->
+              <div
+                class="hidden md:flex absolute right-[-21px] top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-[3px] border-red-500 rounded-full items-center justify-center z-20 shadow-[0_0_20px_rgba(239,68,68,0.6)] group-hover:scale-110 group-hover:bg-red-900/30 transition-all duration-300">
+                <div class="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_white]"></div>
+              </div>
+              <!-- Mobile Node Point -->
+              <div
+                class="md:hidden absolute left-[-38px] top-4 w-6 h-6 bg-gray-900 border-[2px] border-red-500 rounded-full flex items-center justify-center z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <div class="md:w-1/2 md:pl-16 relative ml-12 md:ml-0">
+              <div class="absolute inset-0 bg-red-500/10 rounded-full blur-3xl"></div>
+              <img src="./images/exploit.png" alt="Exploitation"
+                class="w-full rounded-2xl border border-gray-800 shadow-2xl relative z-10 group-hover:-translate-y-2 transition-transform duration-500 ring-1 ring-white/10">
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-12 group">
+            <div class="md:w-1/2 md:pl-16 relative ml-12 md:ml-0">
+              <div class="text-blue-500 font-semibold mb-2 tracking-wider text-sm uppercase">Phase 4</div>
+              <h3 class="text-3xl font-bold text-white mb-4">Customizable pentest reporting</h3>
+              <p class="text-gray-400 leading-relaxed mb-6 text-lg">Built-in generator for creating editable DOCX
+                pentest reports 90% faster. Extensive library of customizable findings, with vulnerability description,
+                risk, evidence, and remediation steps.</p>
+              <ul class="space-y-3 text-gray-300 font-medium">
+                <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> Flexible template system
+                </li>
+                <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> Branded outputs</li>
+                <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> PDF, HTML, CSV, DOCX
+                  exports</li>
+              </ul>
+              <!-- Node Point -->
+              <div
+                class="hidden md:flex absolute left-[-21px] top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-[3px] border-blue-500 rounded-full items-center justify-center z-20 shadow-[0_0_20px_rgba(59,130,246,0.6)] group-hover:scale-110 group-hover:bg-blue-900/30 transition-all duration-300">
+                <div class="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_white]"></div>
+              </div>
+              <!-- Mobile Node Point -->
+              <div
+                class="md:hidden absolute left-[-38px] top-4 w-6 h-6 bg-gray-900 border-[2px] border-blue-500 rounded-full flex items-center justify-center z-20 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <div class="md:w-1/2 md:pr-16 relative ml-12 md:ml-0">
+              <div class="absolute inset-0 bg-blue-500/10 rounded-full blur-3xl"></div>
+              <img src="./images/report_new.png" alt="Reporting"
+                class="w-full rounded-2xl border border-gray-800 shadow-2xl relative z-10 group-hover:-translate-y-2 transition-transform duration-500 ring-1 ring-white/10">
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="flex flex-col md:flex-row items-center justify-between gap-12 group">
+            <div class="md:w-1/2 md:pr-16 md:text-right relative ml-12 md:ml-0">
+              <div class="text-green-500 font-semibold mb-2 tracking-wider text-sm uppercase">Phase 5</div>
+              <h3 class="text-3xl font-bold text-white mb-4">Continuous vulnerability monitoring</h3>
+              <p class="text-gray-400 leading-relaxed mb-6 text-lg">Persistent coverage with scheduled scans that
+                automate recurring tests across assets. Hands-off monitoring with Pentest Robots that trigger repeatable
+                scan sequences.</p>
+              <ul class="space-y-3 md:inline-block text-left md:text-right text-gray-300 font-medium">
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-green-500"></i></span>Scheduled recurring scans <i
+                    class="fas fa-check text-green-500 hidden md:inline-block"></i></li>
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-green-500"></i></span>Real-time alerts & Webhooks <i
+                    class="fas fa-check text-green-500 hidden md:inline-block"></i></li>
+                <li class="flex items-center md:justify-end gap-3"><span class="md:hidden"><i
+                      class="fas fa-check text-green-500"></i></span>REST API access <i
+                    class="fas fa-check text-green-500 hidden md:inline-block"></i></li>
+              </ul>
+              <!-- Node Point -->
+              <div
+                class="hidden md:flex absolute right-[-21px] top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-[3px] border-green-500 rounded-full items-center justify-center z-20 shadow-[0_0_20px_rgba(34,197,94,0.6)] group-hover:scale-110 group-hover:bg-green-900/30 transition-all duration-300">
+                <div class="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_white]"></div>
+              </div>
+              <!-- Mobile Node Point -->
+              <div
+                class="md:hidden absolute left-[-38px] top-4 w-6 h-6 bg-gray-900 border-[2px] border-green-500 rounded-full flex items-center justify-center z-20 shadow-[0_0_15px_rgba(34,197,94,0.5)]">
+                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <div class="md:w-1/2 md:pl-16 relative ml-12 md:ml-0">
+              <div class="absolute inset-0 bg-green-500/10 rounded-full blur-3xl"></div>
+              <img src="./images/monitor.png" alt="Monitoring"
+                class="w-full rounded-2xl border border-gray-800 shadow-2xl relative z-10 group-hover:-translate-y-2 transition-transform duration-500 ring-1 ring-white/10">
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
 
-    <section class="section" id="about">
-      <div class="wrap">
-        <div class="section-title">Digital Fortress Engineering</div>
-        <div class="section-sub">Shadow Labs merges advanced 3D threat modeling with hands-on security expertise.</div>
-        <div class="stats-row">
-          <div class="stat-block"><div class="stat-number">450+</div><div>Assessments</div></div>
-          <div class="stat-block"><div class="stat-number">32+</div><div>Zero-days found</div></div>
-          <div class="stat-block"><div class="stat-number">100%</div><div>Client retention</div></div>
-          <div class="stat-block"><div class="stat-number">5⭐</div><div>Trustindex</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="services">
-      <div class="wrap">
-        <div class="section-title">Cyber Operations Suite</div>
-        <div class="section-sub">Next-gen attack surface management, continuous red teaming and privacy-first defense.</div>
-        <div class="grid-3d">
-          <div class="glow-card"><div class="card-icon">🛡️</div><h3>Red Teaming</h3><p>Full-scope adversary simulation, stealth TTPs, and real-world breach testing.</p></div>
-          <div class="glow-card"><div class="card-icon">📡</div><h3>Threat Intelligence</h3><p>AI-driven threat hunting, darkweb monitoring, and proactive intel feeds.</p></div>
-          <div class="glow-card"><div class="card-icon">🔐</div><h3>Zero Trust Arc</h3><p>Microsegmentation, identity hardening, and continuous validation.</p></div>
-          <div class="glow-card"><div class="card-icon">🎓</div><h3>Shadow Academy</h3><p>Get full control on 50+ Social Engineering Tools.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="courses">
-      <div class="wrap">
-        <div class="section-title">Shadow Academy — Paid Course</div>
-        <div class="section-sub">The ultimate hands-on cyber range: ethical hacking, defense evasion, and incident response.</div>
-        <div class="grid-3d">
-          <div class="glow-card" id="coursePreviewCard" style="cursor: pointer;">
-            <div class="card-icon">💻</div>
-            <h3>Red Team Operator</h3>
-            <p>Master advanced persistence, C2 frameworks, and network evasion.</p>
-            <div style="margin-top: 16px;"><span style="background:#e11d2e; padding: 4px 12px; border-radius: 40px; font-size:0.7rem;">⏳ PRE-REGISTER</span></div>
+    <!-- Metrics Section -->
+    <section class="py-16 bg-gray-900 text-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-gray-800 text-center">
+          <div>
+            <div class="text-4xl font-bold text-brand-400 mb-2">80+</div>
+            <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Security Tools</div>
           </div>
-          <div class="glow-card">
-            <div class="card-icon">🛠️</div>
-            <h3>Recon Toolkit 3D</h3>
-            <p>Interactive OSINT simulation & vulnerability scanner interface.</p>
-            <div style="margin-top: 16px;"><a href="#" id="reconToolKitBtn" style="color:#6be7ff; font-size:0.85rem;">Launch Tool →</a></div>
+          <div>
+            <div class="text-4xl font-bold text-brand-400 mb-2">99.5%</div>
+            <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Accuracy Rate</div>
           </div>
-          <div class="glow-card">
-            <div class="card-icon">🧠</div>
-            <h3>Certified Defense Analyst</h3>
-            <p>Blue team & detection engineering, SIEM mastery, threat hunting cert path.</p>
+          <div>
+            <div class="text-4xl font-bold text-brand-400 mb-2">50%</div>
+            <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Time Saved</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-brand-400 mb-2">15k+</div>
+            <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Users Worldwide</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="contact">
-      <div class="wrap">
-        <div class="section-title">Encrypted Communication</div>
-        <div class="section-sub">Reach our operational security team. All messages secured via PGP end-to-end.</div>
-        <div class="contact-grid">
-          <div class="glow-card">
-            <h3>📡 Secure Request</h3>
-            <form id="contactForm" style="display: flex; flex-direction: column; gap: 14px;">
-              <div class="form-group"><input type="text" placeholder="Organization name" required></div>
-              <div class="form-group"><input type="email" placeholder="email" required></div>
-              <div class="form-group"><textarea placeholder="Threat report / Inquiry"></textarea></div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Send Encrypted →</button>
-            </form>
-          </div>
-          <div class="glow-card">
-            <h3>Operational Nexus</h3>
-            <p style="font-size: 0.85rem;">Shadow Labs Command Center — 24/7 rapid response.</p>
-            <hr style="margin: 16px 0; border-color: rgba(255,255,255,0.1);">
-            <p style="font-size: 0.8rem;">🔹 IRC: irc.shadowlabs.cyber<br>🔹 Signal: @shadow_ops<br>🔹 Matrix: #shadowlabs:cyber.services</p>
-          </div>
+    <!-- CTA Section -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-brand-50/50"></div>
+      <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+        <h2 class="text-4xl font-bold text-white mb-6">Ready to streamline your security testing?</h2>
+        <p class="text-xl text-gray-400 mb-10">Join thousands of security professionals who use Shadow Labs to find,
+          exploit, and report vulnerabilities faster.</p>
+        <div class="flex justify-center gap-4">
+          <button
+            class="btn-primary text-white font-semibold px-8 py-4 rounded-lg shadow-lg text-lg hover:-translate-y-1 transition">
+            Start your free trial
+          </button>
         </div>
+        <p class="mt-6 text-sm text-gray-500">14-day free trial. No credit card required.</p>
       </div>
     </section>
+
   </main>
 
-  <footer class="footer">
-    <div class="wrap footer-inner">
-      <div class="copyright">© 2026 Shadow Labs — Advanced Cyber Division.</div>
-      <div class="socials-footer">
-        <a href="https://discord.gg/shadowlabs" target="_blank" class="social-icon-link"><i class="fab fa-discord"></i> Discord</a>
-        <a href="https://www.youtube.com/@shadowlabs-1" target="_blank" class="social-icon-link"><i class="fab fa-youtube"></i> YouTube</a>
-        <a href="https://www.instagram.com/shadow.labs1/" target="_blank" class="social-icon-link"><i class="fab fa-instagram"></i> Instagram</a>
+  <footer class="bg-gray-950 border-t border-gray-800 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+        <div class="col-span-2 lg:col-span-2">
+          <div class="flex items-center gap-2 mb-6">
+            <img src="./images/logo.png" alt="Shadow Labs Logo" class="w-8 h-8 rounded shadow-md object-cover">
+            <span class="text-lg font-bold text-white">Shadow Labs</span>
+          </div>
+          <p class="text-gray-500 text-sm mb-6 max-w-xs">
+            The modern platform for offensive security teams. Simplify recon, scanning, and reporting in one unified
+            workspace.
+          </p>
+          <div class="flex gap-4">
+            <a href="#" class="text-gray-400 hover:text-white transition"><i
+                class="fa-brands fa-x-twitter text-xl"></i></a>
+            <a href="https://www.instagram.com/shadow.labs1/" target="_blank" rel="noopener noreferrer"
+              class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="https://www.youtube.com/@shadowlabs-1" target="_blank" rel="noopener noreferrer"
+              class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-github text-xl"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Platform</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-brand-600">Web Scanner</a></li>
+            <li><a href="#" class="hover:text-brand-600">Network Scanner</a></li>
+            <li><a href="#" class="hover:text-brand-600">API Scanner</a></li>
+            <li><a href="#" class="hover:text-brand-600">Reporting</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Resources</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-brand-600">Documentation</a></li>
+            <li><a href="#" class="hover:text-brand-600">Blog</a></li>
+            <li><a href="#" class="hover:text-brand-600">Vulnerability DB</a></li>
+            <li><a href="#" class="hover:text-brand-600">API Reference</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Company</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-brand-600">About Us</a></li>
+            <li><a href="#" class="hover:text-brand-600">Careers</a></li>
+            <li><a href="#" class="hover:text-brand-600">Contact</a></li>
+            <li><a href="#" class="hover:text-brand-600">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <p>&copy; 2026 Shadow Labs Inc. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white">Terms of Service</a>
+          <a href="#" class="hover:text-white">Privacy</a>
+          <a href="#" class="hover:text-white">Security</a>
+        </div>
       </div>
     </div>
   </footer>
-</div>
 
-<div class="shadow-chatbot">
-  <div class="chat-toggle" id="chatToggle">
-    <i class="fas fa-robot"></i>
-  </div>
-  <div class="chat-window" id="chatWindow">
-    <div class="chat-header">
-      <div class="chat-avatar">S</div>
-      <div class="chat-header-info">
-        <h4>SHADOW AI</h4>
-        <p>⚡ Online</p>
-      </div>
-      <div class="chat-close" id="chatClose">
-        <i class="fas fa-times"></i>
-      </div>
-    </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="message bot">
-        <div class="msg-avatar">S</div>
-        <div class="msg-bubble">👋 I'm Shadow, your AI assistant. Ask me anything!</div>
-      </div>
-    </div>
-    <div class="chat-input-area">
-      <input type="text" id="chatInput" placeholder="Ask Shadow..." autocomplete="off">
-      <button class="chat-send" id="chatSend"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
-</div>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
 
-<div id="modalOverlay" class="modal">
-  <div class="modal-content">
-    <h2 style="color:#6be7ff;">⛧ Shadow Academy</h2>
-    <p>The Premium Cybersecurity Masterclass is launching Q3 2026.</p>
-    <button id="closeModalBtn" class="btn btn-primary" style="margin-top: 8px;">Notify me</button>
-  </div>
-</div>
-
-<script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-    }
-  }
-</script>
-
-<script type="module">
-  import * as THREE from 'three';
-  import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-  import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-  import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-  
-  const container = document.getElementById('canvas-container');
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x03050a);
-  scene.fog = new THREE.FogExp2(0x03050a, 0.006);
-  
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 1.5, 11);
-  
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  container.appendChild(renderer.domElement);
-  
-  const renderScene = new RenderPass(scene, camera);
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.7);
-  bloomPass.threshold = 0.1;
-  bloomPass.strength = 0.6;
-  const effectComposer = new EffectComposer(renderer);
-  effectComposer.addPass(renderScene);
-  effectComposer.addPass(bloomPass);
-  
-  const ambientLight = new THREE.AmbientLight(0x111122);
-  scene.add(ambientLight);
-  const mainLight = new THREE.DirectionalLight(0xffffff, 1);
-  mainLight.position.set(2, 5, 3);
-  scene.add(mainLight);
-  const backLight = new THREE.PointLight(0xe11d2e, 0.5);
-  backLight.position.set(-2, 1, -4);
-  scene.add(backLight);
-  const fillLight = new THREE.PointLight(0x6be7ff, 0.4);
-  fillLight.position.set(3, 2, 4);
-  scene.add(fillLight);
-  
-  const ringGeo = new THREE.TorusGeometry(2.1, 0.07, 64, 300);
-  const ringMat = new THREE.MeshStandardMaterial({ color: 0xe11d2e, emissive: 0x440000, metalness: 0.9 });
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.rotation.x = Math.PI / 2;
-  scene.add(ring);
-  
-  const outerRingGeo = new THREE.TorusGeometry(2.8, 0.05, 128, 400);
-  const outerMat = new THREE.MeshStandardMaterial({ color: 0x6be7ff, emissive: 0x006688 });
-  const outerRing = new THREE.Mesh(outerRingGeo, outerMat);
-  outerRing.rotation.x = Math.PI / 2 + 0.3;
-  scene.add(outerRing);
-  
-  const coreGlow = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), new THREE.MeshStandardMaterial({ color: 0xff3366, emissive: 0xcc1133, emissiveIntensity: 1.0 }));
-  scene.add(coreGlow);
-  
-  const particleCount = 1500;
-  const particlesGeometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    positions[i*3] = (Math.random() - 0.5) * 38;
-    positions[i*3+1] = (Math.random() - 0.5) * 16;
-    positions[i*3+2] = (Math.random() - 0.5) * 18 - 6;
-  }
-  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particleSystem = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({ color: 0x88aaff, size: 0.04, transparent: true, opacity: 0.5 }));
-  scene.add(particleSystem);
-  
-  let time = 0;
-  function animate() {
-    requestAnimationFrame(animate);
-    time += 0.012;
-    ring.rotation.z = time * 0.45;
-    outerRing.rotation.x = Math.PI / 2 + Math.sin(time * 0.3) * 0.15;
-    outerRing.rotation.y = time * 0.2;
-    coreGlow.scale.setScalar(1 + Math.sin(time * 5) * 0.03);
-    particleSystem.rotation.y = time * 0.04;
-    camera.position.x += (0 - camera.position.x) * 0.02;
-    camera.lookAt(0, 0, 0);
-    effectComposer.render();
-  }
-  animate();
-  
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    effectComposer.setSize(window.innerWidth, window.innerHeight);
-  });
-  
- // ========== 3D CARD INTERACTION - WORKS ON MOBILE & DESKTOP ==========
-const cardContainer = document.getElementById('card3dContainer');
-const card = document.getElementById('card3d');
-
-if (cardContainer) {
-  // For mouse (desktop)
-  cardContainer.addEventListener('mousemove', (e) => {
-    const rect = cardContainer.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    const rotateX = ((y - centerY) / centerY) * 12;
-    const rotateY = ((x - centerX) / centerX) * 12;
-    
-    card.style.transform = `perspective(1200px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) translateZ(15px)`;
-  });
-  
-  cardContainer.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-  });
-  
-  // For touch (mobile/tablet)
-  cardContainer.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const rect = cardContainer.getBoundingClientRect();
-    const touch = e.touches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    const rotateX = ((y - centerY) / centerY) * 12;
-    const rotateY = ((x - centerX) / centerX) * 12;
-    
-    card.style.transform = `perspective(1200px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) translateZ(15px)`;
-  });
-  
-  cardContainer.addEventListener('touchend', () => {
-    card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-  });
-}
-  
-  // Chatbot Logic
-  const chatToggle = document.getElementById('chatToggle');
-  const chatWindow = document.getElementById('chatWindow');
-  const chatClose = document.getElementById('chatClose');
-  const chatInput = document.getElementById('chatInput');
-  const chatSend = document.getElementById('chatSend');
-  const chatMessages = document.getElementById('chatMessages');
-  
-  chatToggle.addEventListener('click', () => chatWindow.classList.toggle('open'));
-  chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
-  
-  function addMessage(text, isUser = false) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-    if (!isUser) {
-      msgDiv.innerHTML = `<div class="msg-avatar">S</div><div class="msg-bubble">${text}</div>`;
-    } else {
-      msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
-    }
-    chatMessages.appendChild(msgDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-  
-  function showTyping() {
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'message bot';
-    typingDiv.id = 'typingIndicator';
-    typingDiv.innerHTML = `<div class="msg-avatar">S</div><div class="msg-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
-    chatMessages.appendChild(typingDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-  
-  function removeTyping() {
-    const typing = document.getElementById('typingIndicator');
-    if (typing) typing.remove();
-  }
-  
-  function getBotResponse(userMsg) {
-    const msg = userMsg.toLowerCase();
-    if (msg.includes('hello') || msg.includes('hi')) return "Hello! I'm Shadow, your cybersecurity assistant.";
-    if (msg.includes('service')) return "We offer Red Teaming, Threat Intelligence, Zero Trust Architecture, and Security Training.";
-    if (msg.includes('course')) return "Our Shadow Academy features Red Team Operator and Defense Analyst courses, launching Q3 2026!";
-    if (msg.includes('red team')) return "Red Teaming simulates real-world attacks to identify vulnerabilities before hackers do.";
-    if (msg.includes('zero trust')) return "Zero Trust requires continuous verification of every user and device accessing your network.";
-    return "I'm Shadow. Ask me about our services, courses, red teaming, or zero trust architecture!";
-  }
-  
-  async function sendMessage() {
-    const text = chatInput.value.trim();
-    if (!text) return;
-    addMessage(text, true);
-    chatInput.value = '';
-    showTyping();
-    setTimeout(() => {
-      removeTyping();
-      addMessage(getBotResponse(text));
-    }, 500);
-  }
-  
-  chatSend.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-  
-  const modal = document.getElementById('modalOverlay');
-  const coursePreview = document.getElementById('coursePreviewCard');
-  const reconBtn = document.getElementById('reconToolKitBtn');
-  const closeModalBtn = document.getElementById('closeModalBtn');
-  const showCourseBtn = document.getElementById('showCourseModalBtn');
-  
-  function openModal() { modal.classList.add('active'); }
-  function closeModal() { modal.classList.remove('active'); }
-  
-  if(coursePreview) coursePreview.addEventListener('click', openModal);
-  if(showCourseBtn) showCourseBtn.addEventListener('click', openModal);
-  if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
-  
-  if(reconBtn) {
-    reconBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert("🔍 Recon Toolkit 3D launching soon.");
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      if (mobileMenu.classList.contains('hidden')) {
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+      } else {
+        menuIcon.classList.remove('fa-bars');
+        menuIcon.classList.add('fa-times');
+      }
     });
-  }
-  
-  const menuBtn = document.getElementById('menuBtn');
-  const navLinks = document.getElementById('navlinks');
-  if(menuBtn) {
-    menuBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
-    document.querySelectorAll('.navlinks a').forEach(link => link.addEventListener('click', () => navLinks.classList.remove('show')));
-  }
-  
-  const contactForm = document.getElementById('contactForm');
-  if(contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('⚡ Secure transmission received. Shadow Labs will respond within 24h.');
-      contactForm.reset();
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+      });
     });
-  }
-</script>
+
+    // Simulated Video Terminal Animation
+    const terminalLines = [
+      { text: "root@shadow-labs:~# shadow-cli scan -t enterprise.com --stealth", color: "text-brand-400", type: "cmd", wait: 500 },
+      { text: " ", color: "text-gray-300", type: "out", wait: 50 },
+      { text: "    ____ __               __             __          __       ", color: "text-brand-600 font-bold", type: "out", wait: 20 },
+      { text: "   / __// /_  ____ _ ____/ /____  _      / /   ____ _/ /_  _____", color: "text-brand-600 font-bold", type: "out", wait: 20 },
+      { text: "  / /_ / __ \\/ __ `/ __  / __ \\ | /| / / / / / __ `/ __ \\/ ___/", color: "text-brand-600 font-bold", type: "out", wait: 20 },
+      { text: " / __// / / / /_/ / /_/ / /_/ / |/ |/ / / /___/ /_/ / /_/ (__  )", color: "text-brand-500 font-bold", type: "out", wait: 20 },
+      { text: "/_/  /_/ /_/\\__,_/\\__,_/\\____/|__/|__/ /_____/\\__,_/_.___/____/ ", color: "text-brand-500 font-bold", type: "out", wait: 50 },
+      { text: " ", color: "text-gray-300", type: "out", wait: 50 },
+      { text: "[*] Shadow Labs Advanced Persistent Scanner v2.1.0", color: "text-brand-300 font-bold", type: "out", wait: 100 },
+      { text: "[*] Target: enterprise.com | Mode: Stealth | Threads: 50", color: "text-gray-400", type: "out", wait: 800 },
+      { text: " ", color: "text-gray-300", type: "out", wait: 50 },
+      { text: "[10:23:41] [INF] Running passive reconnaissance module...", color: "text-blue-400", type: "out", wait: 800 },
+      { text: "[10:23:44] [INF] Discovered 342 subdomains via certificate transparency", color: "text-gray-300", type: "out", wait: 400 },
+      { text: "[10:23:46] [INF] Resolving IP addresses...", color: "text-gray-300", type: "out", wait: 800 },
+      { text: "[10:23:49] [INF] Found 142 live endpoints. Initiating port scan...", color: "text-blue-400", type: "out", wait: 1000 },
+      { text: "[10:23:50] [INF] Port 80/tcp  (http) is open", color: "text-green-400", type: "out", wait: 100 },
+      { text: "[10:23:50] [INF] Port 443/tcp (https) is open", color: "text-green-400", type: "out", wait: 100 },
+      { text: "[10:23:51] [INF] Port 22/tcp  (ssh) is open", color: "text-green-400", type: "out", wait: 800 },
+      { text: "[10:23:52] [INF] Launching nuclei vulnerability engine...", color: "text-blue-400", type: "out", wait: 1200 },
+      { text: "[10:23:55] [WRN] Detected outdated Apache Tomcat 9.0.41", color: "text-yellow-400", type: "out", wait: 400 },
+      { text: "[10:23:57] [WRN] Found exposed .git directory at api.enterprise.com/.git/", color: "text-yellow-400", type: "out", wait: 1000 },
+      { text: "[10:23:59] [INF] Fuzzing parameters on login endpoint...", color: "text-gray-300", type: "out", wait: 1500 },
+      { text: "[10:24:02] [ERR] [CVE-2023-XXXXX] CRITICAL: Unauthenticated Remote Code Execution", color: "text-red-500 font-bold bg-red-900/20 inline-block px-1", type: "out", wait: 800 },
+      { text: "[10:24:03] [INF] Payload successfully delivered. Spawning reverse shell...", color: "text-gray-300", type: "out", wait: 1000 },
+      { text: "[10:24:05] [INF] Reverse shell established. uid=0(root) gid=0(root) groups=0(root)", color: "text-green-400 font-bold", type: "out", wait: 1000 },
+      { text: "[10:24:06] [INF] Extracting proof-of-concept evidence...", color: "text-gray-300", type: "out", wait: 1000 },
+      { text: "[10:24:07] [INF] Scan complete. Generating comprehensive PDF report...", color: "text-brand-400", type: "out", wait: 2000 },
+      { text: "root@shadow-labs:~# ", color: "text-brand-400", type: "cmd", wait: 0 }
+    ];
+
+    async function typeText(element, lineData) {
+      if (lineData.type === 'out') {
+        element.textContent = lineData.text;
+      } else {
+        const speed = 25;
+        for (let i = 0; i < lineData.text.length; i++) {
+          element.textContent += lineData.text.charAt(i);
+          await new Promise(r => setTimeout(r, speed + (Math.random() * 10 - 5)));
+        }
+      }
+    }
+
+    async function playTerminalVideo() {
+      const container = document.getElementById('videoTerminal');
+
+      while (true) {
+        container.innerHTML = ''; // clear
+
+        for (let i = 0; i < terminalLines.length; i++) {
+          const line = terminalLines[i];
+
+          // Remove cursor from previous line if exists
+          const prevLineContainer = container.lastElementChild;
+          if (prevLineContainer) {
+            const prevLine = prevLineContainer.querySelector('.type-line');
+            if (prevLine) prevLine.classList.remove('cursor-blink');
+          }
+
+          const lineContainer = document.createElement('div');
+          lineContainer.className = 'w-full';
+
+          const lineEl = document.createElement('span');
+          lineEl.className = `type-line ${line.color} cursor-blink`;
+          lineEl.textContent = '';
+
+          lineContainer.appendChild(lineEl);
+          container.appendChild(lineContainer);
+
+          // Type effect
+          await typeText(lineEl, line);
+
+          // Auto scroll to bottom
+          container.scrollTop = container.scrollHeight;
+
+          // Wait after line
+          if (line.wait > 0) {
+            await new Promise(r => setTimeout(r, line.wait));
+          }
+        }
+
+        // Wait at the end before restarting
+        await new Promise(r => setTimeout(r, 5000));
+      }
+    }
+
+    // Add progress bar animation for video
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes progress {
+        0% { transform: scaleX(0); }
+        100% { transform: scaleX(1); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Start the video simulation
+    playTerminalVideo();
+  </script>
 </body>
+
 </html>
